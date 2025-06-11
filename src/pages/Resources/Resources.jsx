@@ -1,6 +1,12 @@
-import React from "react";
+import React, { useEffect } from 'react';
 
 function Resources() {
+    // useEffect(() => {
+    //   document.body.style.overflow = 'hidden';
+    //   return () => {
+    //     document.body.style.overflow = 'auto'; // Restore on unmount
+    //   };
+    // }, []);
   const resources = [
     {
       title: "Learn React in one video.",
@@ -41,11 +47,11 @@ function Resources() {
   ];
 
   return (
-    <div className="p-6 bg-gray-100 min-h-screen">
+    <div className="p-6 bg-gray-100 min-h-screen bg-gradient-to-r from-[#b263fc] to-[#8928e2] ">
       <h1 className="text-4xl font-bold text-center text-gray-800 mb-2">
         Get Started
       </h1>
-      <p className="text-center text-gray-600 mb-10">
+      <p className="text-center text-white mb-10">
         We provide you the way to learn from the best resources out there!
       </p>
 
