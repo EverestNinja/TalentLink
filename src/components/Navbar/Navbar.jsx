@@ -26,7 +26,7 @@ function Navbar() {
   }, []);
 
   return (
-    <nav className="bg-[#8928e2] py-3">
+    <nav className="bg-gradient-to-r from-[#b263fc] to-[#8928e2] py-3">
       <div className="max-w-7xl mx-auto px-6">
         <div className="flex items-center justify-between">
           {/* Logo */}

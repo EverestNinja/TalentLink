@@ -1,4 +1,5 @@
-import './App.css'
+import './App.css';
+import { useEffect } from 'react';
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import Navbar from './components/Navbar/Navbar';
 import Home from './pages/Home/Home';
@@ -8,8 +9,22 @@ import Jobs from './pages/Jobs/Jobs';
 import About from './pages/About/About';
 import Contact from './pages/Contact/Contact';
 import Login from './pages/Login/Login';
+import SignupPage from './pages/Login/signup';
 
 function App() {
+  useEffect(() => {
+    const script = document.createElement("script");
+    script.src = "https://embed.tawk.to/68494fcdd1e41e190ca9b698/1itf5vfd2";
+    script.async = true;
+    script.charset = "UTF-8";
+    script.setAttribute("crossorigin", "*");
+    document.body.appendChild(script);
+
+    return () => {
+      document.body.removeChild(script); // Cleanup on unmount
+    };
+  }, []);
+
   return (
     <BrowserRouter>
       <Navbar />
@@ -21,10 +36,11 @@ function App() {
         <Route path="/about" element={<About />} />
         <Route path="/contact" element={<Contact />} />
         <Route path="/login" element={<Login />} />
+        <Route path="/signup" element={<SignupPage />} />
       </Routes>
       {/* <Footer /> */}
-      </BrowserRouter>
-  )
+    </BrowserRouter>
+  );
 }
 
-export default App
+export default App;
