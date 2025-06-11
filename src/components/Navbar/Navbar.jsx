@@ -164,7 +164,7 @@ function Navbar() {
                     ? "bg-[#7614c2] text-white"
                     : ""
                 }`}
-                href="/resource"
+                href="/resources"
               >
                 Resource
               </a>
