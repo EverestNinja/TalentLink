@@ -18,7 +18,7 @@ import OrgIcon from "@mui/icons-material/Business";
 import GoogleIcon from "@mui/icons-material/Google";
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
-import { loginWithEmail, loginWithGoogle, getRedirectPath } from "./process";
+import { signupWithEmail, signupWithGoogle, getRedirectPath } from "./process";
 
 import normalBG from "../../assets/normal.svg";
 import userBG from "../../assets/userbg.svg";
@@ -49,15 +49,19 @@ const roles = [
   },
 ];
 
-export default function RoleBasedLoginPage() {
+export default function SignupPage() {
   const [selectedRole, setSelectedRole] = useState(null);
   const [hoveredRole, setHoveredRole] = useState(null);
   const [showForm, setShowForm] = useState(false);
   const [formData, setFormData] = useState({
+    firstName: "",
+    lastName: "",
     email: "",
     password: "",
+    confirmPassword: "",
   });
   const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
@@ -87,32 +91,39 @@ export default function RoleBasedLoginPage() {
     }));
   };
 
-  const handleLoginSuccess = (result) => {
+  // Validation is now handled in process.jsx
+
+  // User document creation is now handled in process.jsx
+
+  const handleSignupSuccess = (result) => {
     setSuccess(result.message);
     
     // Reset form
     setFormData({
+      firstName: "",
+      lastName: "",
       email: "",
       password: "",
+      confirmPassword: "",
     });
 
     // Determine redirect path based on profile completion
     const redirectPath = getRedirectPath(result.userData.role, result.userData);
     
-    // Navigate after successful login
+    // Navigate after successful signup
     setTimeout(() => {
       navigate(redirectPath);
     }, 1500);
   };
 
-  const handleEmailLogin = async (e) => {
+  const handleEmailSignup = async (e) => {
     e.preventDefault();
     setLoading(true);
     setError("");
 
     try {
-      const result = await loginWithEmail(formData.email, formData.password);
-      handleLoginSuccess(result);
+      const result = await signupWithEmail(formData, selectedRole);
+      handleSignupSuccess(result);
     } catch (error) {
       setError(error.message);
     } finally {
@@ -120,13 +131,13 @@ export default function RoleBasedLoginPage() {
     }
   };
 
-  const handleGoogleLogin = async () => {
+  const handleGoogleSignup = async () => {
     setLoading(true);
     setError("");
 
     try {
-      const result = await loginWithGoogle();
-      handleLoginSuccess(result);
+      const result = await signupWithGoogle(selectedRole);
+      handleSignupSuccess(result);
     } catch (error) {
       setError(error.message);
     } finally {
@@ -140,8 +151,11 @@ export default function RoleBasedLoginPage() {
     setError("");
     setSuccess("");
     setFormData({
+      firstName: "",
+      lastName: "",
       email: "",
       password: "",
+      confirmPassword: "",
     });
   };
 
@@ -196,7 +210,7 @@ export default function RoleBasedLoginPage() {
           zIndex: 2,
         }}
       >
-        Welcome to TalentLink
+        Join TalentLink
       </Typography>
 
       <Box sx={{ mt: { xs: 10, md: 15 }, zIndex: 1, width: "100%", display: "flex", flexDirection: "column", alignItems: "center" }}>
@@ -253,7 +267,7 @@ export default function RoleBasedLoginPage() {
                     {icon}
                   </Box>
                   <Typography variant="h6" gutterBottom sx={{ color: "white" }}>
-                    Login as {label}
+                    Sign up as {label}
                   </Typography>
                   <Typography variant="body2" sx={{ color: "rgba(255,255,255,0.8)" }}>
                     {description}
@@ -263,7 +277,7 @@ export default function RoleBasedLoginPage() {
             </Box>
           </>
         ) : (
-          /* Login Form */
+          /* Signup Form */
           <Card
             sx={{
               p: 4,
@@ -282,7 +296,7 @@ export default function RoleBasedLoginPage() {
                 ← Back
               </Button>
               <Typography variant="h5" sx={{ fontWeight: "bold" }}>
-                Login as {roles.find(r => r.role === selectedRole)?.label}
+                Sign up as {roles.find(r => r.role === selectedRole)?.label}
               </Typography>
             </Box>
 
@@ -298,11 +312,11 @@ export default function RoleBasedLoginPage() {
               </Alert>
             )}
 
-            {/* Google Login Button */}
+            {/* Google Signup Button */}
             <Button
               fullWidth
               variant="outlined"
-              onClick={handleGoogleLogin}
+              onClick={handleGoogleSignup}
               disabled={loading}
               sx={{
                 mb: 3,
@@ -325,8 +339,29 @@ export default function RoleBasedLoginPage() {
               </Typography>
             </Divider>
 
-            {/* Email Login Form */}
-            <Box component="form" onSubmit={handleEmailLogin}>
+            {/* Email Signup Form */}
+            <Box component="form" onSubmit={handleEmailSignup}>
+              <Box sx={{ display: "flex", gap: 2, mb: 2 }}>
+                <TextField
+                  fullWidth
+                  label="First Name"
+                  name="firstName"
+                  value={formData.firstName}
+                  onChange={handleInputChange}
+                  variant="outlined"
+                  required
+                />
+                <TextField
+                  fullWidth
+                  label="Last Name"
+                  name="lastName"
+                  value={formData.lastName}
+                  onChange={handleInputChange}
+                  variant="outlined"
+                  required
+                />
+              </Box>
+
               <TextField
                 fullWidth
                 label="Email Address"
@@ -348,7 +383,7 @@ export default function RoleBasedLoginPage() {
                 onChange={handleInputChange}
                 variant="outlined"
                 required
-                sx={{ mb: 3 }}
+                sx={{ mb: 2 }}
                 InputProps={{
                   endAdornment: (
                     <InputAdornment position="end">
@@ -357,6 +392,30 @@ export default function RoleBasedLoginPage() {
                         edge="end"
                       >
                         {showPassword ? <VisibilityOff /> : <Visibility />}
+                      </IconButton>
+                    </InputAdornment>
+                  ),
+                }}
+              />
+
+              <TextField
+                fullWidth
+                label="Confirm Password"
+                name="confirmPassword"
+                type={showConfirmPassword ? "text" : "password"}
+                value={formData.confirmPassword}
+                onChange={handleInputChange}
+                variant="outlined"
+                required
+                sx={{ mb: 3 }}
+                InputProps={{
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      <IconButton
+                        onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                        edge="end"
+                      >
+                        {showConfirmPassword ? <VisibilityOff /> : <Visibility />}
                       </IconButton>
                     </InputAdornment>
                   ),
@@ -376,7 +435,7 @@ export default function RoleBasedLoginPage() {
                   },
                 }}
               >
-                {loading ? <CircularProgress size={20} color="inherit" /> : "Login"}
+                {loading ? <CircularProgress size={20} color="inherit" /> : "Create Account"}
               </Button>
             </Box>
           </Card>
@@ -386,12 +445,12 @@ export default function RoleBasedLoginPage() {
           variant="body1"
           sx={{ color: "#fff", mt: 3, zIndex: 1, textAlign: "center" }}
         >
-          New here?{" "}
-          <a href="/signup" style={{ color: "#fff", textDecoration: "underline" }}>
-            Sign up instead
+          Already have an account?{" "}
+          <a href="/login" style={{ color: "#fff", textDecoration: "underline" }}>
+            Login instead
           </a>
         </Typography>
       </Box>
     </Box>
   );
-}
+} 
