@@ -64,7 +64,9 @@ function Navbar() {
   }
 
   return (
-    <nav className="bg-gradient-to-r from-[#b263fc] to-[#8928e2] py-3">
+   
+    // fixed top-0 left-0 right-0 z-50  py-3 shadow-md
+    <nav className= {`fixed bg-gradient-to-r from-[#b263fc] to-[#8928e2] w-full z-50 top-0 start-0 transition-all duration-500 ${isScrolled ? "py-3 modern-glass" : "py-4 bg-transparent"}`}>
       <div className="max-w-7xl mx-auto px-6">
         <div className="flex items-center justify-between">
           {/* Logo */}
