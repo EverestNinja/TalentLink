@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import {
   Box,
   Card,
@@ -17,14 +18,12 @@ import OrgIcon from "@mui/icons-material/Business";
 import GoogleIcon from "@mui/icons-material/Google";
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
-import { createUserWithEmailAndPassword, signInWithPopup, GoogleAuthProvider, updateProfile } from "firebase/auth";
-import { doc, setDoc } from "firebase/firestore";
-import { auth, db } from "../../firebase/config";
+import { signupWithEmail, signupWithGoogle, getRedirectPath } from "./process";
 
 import normalBG from "../../assets/normal.svg";
 import userBG from "../../assets/userbg.svg";
-import mentorBG from "../../assets/mentor.svg";
-import orgBG from "../../assets/org.svg";
+import mentorBG from "../../assets/Mentor.svg";
+import orgBG from "../../assets/Org.svg";
 
 const roles = [
   {
@@ -66,6 +65,7 @@ export default function SignupPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
+  const navigate = useNavigate();
 
   const getBackgroundImage = () => {
     if (selectedRole) {
@@ -91,153 +91,55 @@ export default function SignupPage() {
     }));
   };
 
-  const validateForm = () => {
-    if (!formData.firstName.trim()) {
-      setError("First name is required");
-      return false;
-    }
-    if (!formData.lastName.trim()) {
-      setError("Last name is required");
-      return false;
-    }
-    if (!formData.email.trim()) {
-      setError("Email is required");
-      return false;
-    }
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
-      setError("Please enter a valid email address");
-      return false;
-    }
-    if (formData.password.length < 6) {
-      setError("Password must be at least 6 characters long");
-      return false;
-    }
-    if (formData.password !== formData.confirmPassword) {
-      setError("Passwords do not match");
-      return false;
-    }
-    return true;
-  };
+  // Validation is now handled in process.jsx
 
-  const createUserDocument = async (user, role, additionalData = {}) => {
-    const userRef = doc(db, "users", user.uid);
-    const userData = {
-      uid: user.uid,
-      email: user.email,
-      displayName: user.displayName,
-      role: role,
-      firstName: additionalData.firstName || user.displayName?.split(" ")[0] || "",
-      lastName: additionalData.lastName || user.displayName?.split(" ")[1] || "",
-      createdAt: new Date().toISOString(),
-      isActive: true,
-    };
+  // User document creation is now handled in process.jsx
 
-    await setDoc(userRef, userData);
-    return userData;
+  const handleSignupSuccess = (result) => {
+    setSuccess(result.message);
+    
+    // Reset form
+    setFormData({
+      firstName: "",
+      lastName: "",
+      email: "",
+      password: "",
+      confirmPassword: "",
+    });
+
+    // Determine redirect path based on profile completion
+    const redirectPath = getRedirectPath(result.userData.role, result.userData);
+    
+    // Navigate after successful signup
+    setTimeout(() => {
+      navigate(redirectPath);
+    }, 1500);
   };
 
   const handleEmailSignup = async (e) => {
     e.preventDefault();
-    if (!validateForm()) return;
-
     setLoading(true);
     setError("");
 
     try {
-      // Create user with Firebase Auth
-      const userCredential = await createUserWithEmailAndPassword(
-        auth,
-        formData.email,
-        formData.password
-      );
-      const user = userCredential.user;
-
-      // Update user profile with display name
-      await updateProfile(user, {
-        displayName: `${formData.firstName} ${formData.lastName}`,
-      });
-
-      // Create user document in Firestore
-      await createUserDocument(user, selectedRole, {
-        firstName: formData.firstName,
-        lastName: formData.lastName,
-      });
-
-      setSuccess(`Account created successfully as ${selectedRole}!`);
-      
-      // Reset form
-      setFormData({
-        firstName: "",
-        lastName: "",
-        email: "",
-        password: "",
-        confirmPassword: "",
-      });
-
-      // Redirect or handle success (you can add navigation here)
-      setTimeout(() => {
-        console.log("Redirect to dashboard or login");
-      }, 2000);
-
+      const result = await signupWithEmail(formData, selectedRole);
+      handleSignupSuccess(result);
     } catch (error) {
-      console.error("Signup error:", error);
-      switch (error.code) {
-        case "auth/email-already-in-use":
-          setError("This email is already registered. Please use a different email or try logging in.");
-          break;
-        case "auth/weak-password":
-          setError("Password is too weak. Please choose a stronger password.");
-          break;
-        case "auth/invalid-email":
-          setError("Please enter a valid email address.");
-          break;
-        default:
-          setError("An error occurred during signup. Please try again.");
-      }
+      setError(error.message);
     } finally {
       setLoading(false);
     }
   };
 
   const handleGoogleSignup = async () => {
-    if (!selectedRole) {
-      setError("Please select a role first");
-      return;
-    }
-
     setLoading(true);
     setError("");
 
     try {
-      const provider = new GoogleAuthProvider();
-      provider.addScope('email');
-      provider.addScope('profile');
-      
-      const result = await signInWithPopup(auth, provider);
-      const user = result.user;
-
-      // Create user document in Firestore
-      await createUserDocument(user, selectedRole);
-
-      setSuccess(`Account created successfully with Google as ${selectedRole}!`);
-      
-      // Redirect or handle success
-      setTimeout(() => {
-        console.log("Redirect to dashboard");
-      }, 2000);
-
+      const result = await signupWithGoogle(selectedRole);
+      handleSignupSuccess(result);
     } catch (error) {
-      console.error("Google signup error:", error);
-      switch (error.code) {
-        case "auth/popup-closed-by-user":
-          setError("Sign-up cancelled. Please try again.");
-          break;
-        case "auth/account-exists-with-different-credential":
-          setError("An account already exists with this email. Please try logging in instead.");
-          break;
-        default:
-          setError("Google sign-up failed. Please try again.");
-      }
+      setError(error.message);
     } finally {
       setLoading(false);
     }
