@@ -1,22 +1,72 @@
 import React, { useState } from "react";
+import { Card, Button, Typography } from "@material-tailwind/react";
+import { MdLocationOn, MdMailOutline, MdOutlineDateRange } from "react-icons/md";
+import { RiMoneyRupeeCircleLine } from "react-icons/ri";
 
 const jobsData = [
-  { title: "Frontend Developer", company: "Tech Solutions", location: "Remote" },
-  { title: "Frontend Developer", company: "Tech Solutions", location: "Remote" },
-  { title: "Frontend Developer", company: "Tech Solutions", location: "Remote" },
-  { title: "Frontend Developer", company: "Tech Solutions", location: "Remote" },
-  { title: "Frontend Developer", company: "Tech Solutions", location: "Remote" },
-  { title: "Backend Engineer", company: "InnovateX", location: "San Francisco, CA" },
-  { title: "UI/UX Designer", company: "Creative Minds", location: "New York, NY" },
+  {
+    id: 1,
+    title: "Python Full Stack Developer",
+    company: "Tech Solutions",
+    salary: "150,000 NPR to 220,000 NPR",
+    location: "Kathmandu",
+    type: "On-site",
+    date: "2/28/2024",
+  },
+  {
+    id: 2,
+    title: "React Developer",
+    company: "InnovateX",
+    salary: "100,000 NPR to 150,000 NPR",
+    location: "Pokhara",
+    type: "Remote",
+    date: "3/05/2024",
+  },
+  {
+    id: 3,
+    title: "React Developer",
+    company: "InnovateX",
+    salary: "100,000 NPR to 150,000 NPR",
+    location: "Pokhara",
+    type: "Remote",
+    date: "3/05/2024",
+  },
+  {
+    id: 4,
+    title: "Frontend Developer",
+    company: "Tech Solutions",
+    salary: "N/A",
+    location: "Remote",
+    type: "Remote",
+    date: "N/A",
+  },
+  {
+    id: 5,
+    title: "Backend Engineer",
+    company: "InnovateX",
+    salary: "N/A",
+    location: "San Francisco, CA",
+    type: "On-site",
+    date: "N/A",
+  },
+  {
+    id: 6,
+    title: "UI/UX Designer",
+    company: "Creative Minds",
+    salary: "N/A",
+    location: "New York, NY",
+    type: "On-site",
+    date: "N/A",
+  },
+];
+
+const mentorsData = [
+  { name: "Alice Johnson", expertise: "Frontend Development", company: "Tech Solutions" },
+  { name: "Bob Smith", expertise: "Backend Engineering", company: "InnovateX" },
+  { name: "Carol Lee", expertise: "UI/UX Design", company: "Creative Minds" },
 ];
 
 function Jobs() {
-  const mentorsData = [
-    { name: "Alice Johnson", expertise: "Frontend Development", company: "Tech Solutions" },
-    { name: "Bob Smith", expertise: "Backend Engineering", company: "InnovateX" },
-    { name: "Carol Lee", expertise: "UI/UX Design", company: "Creative Minds" },
-  ];
-
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCompany, setSelectedCompany] = useState("");
   const [selectedLocation, setSelectedLocation] = useState("");
@@ -24,10 +74,11 @@ function Jobs() {
   const companies = [...new Set(jobsData.map((job) => job.company))];
   const locations = [...new Set(jobsData.map((job) => job.location))];
 
-  const filteredJobs = jobsData.filter((job) =>
-    job.title.toLowerCase().includes(searchTerm.toLowerCase()) &&
-    (selectedCompany === "" || job.company === selectedCompany) &&
-    (selectedLocation === "" || job.location === selectedLocation)
+  const filteredJobs = jobsData.filter(
+    (job) =>
+      job.title.toLowerCase().includes(searchTerm.toLowerCase()) &&
+      (selectedCompany === "" || job.company === selectedCompany) &&
+      (selectedLocation === "" || job.location === selectedLocation)
   );
 
   return (
@@ -75,25 +126,58 @@ function Jobs() {
           {/* Jobs Section */}
           <div>
             <h2 className="text-2xl font-semibold mb-6">Latest Jobs</h2>
-            {filteredJobs.length === 0 ? (
-              <p className="text-white/80">No jobs found.</p>
-            ) : (
-              <div className="grid md:grid-cols-2 gap-6">
-                {filteredJobs.map((job, idx) => (
-                  <div
-                    key={idx}
-                    className="bg-white/10 backdrop-blur-md border border-white/20 rounded-xl p-6 transition hover:scale-[1.02] hover:shadow-lg"
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {filteredJobs.length > 0 ? (
+                filteredJobs.map((job) => (
+                  <Card
+                    key={job.id}
+                    className="border-1 border-[#8928e2] !rounded-xl p-4 cursor-pointer bg-white max-w-[800px] w-full !transition-transform duration-300 hover:scale-105"
                   >
-                    <h3 className="text-xl font-bold text-white">{job.title}</h3>
-                    <p className="text-sm text-gray-100">Company: {job.company}</p>
-                    <p className="text-sm text-gray-200 mb-4">Location: {job.location}</p>
-                    <button className="mt-2 bg-white text-purple-700 font-medium px-4 py-2 rounded-full hover:bg-purple-100 transition">
-                      Apply Now
-                    </button>
-                  </div>
-                ))}
-              </div>
-            )}
+                    <div className="flex !flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                      <div className="w-full">
+                        <Typography
+                          variant="h5"
+                          component="h3"
+                          className="text-[1.6rem] sm:text-[2rem] font-semibold text-[#8928e2]"
+                        >
+                          {job.title}
+                        </Typography>
+
+                        <div className="font-semibold flex gap-2 items-center mt-2 text-gray-800">
+                          <RiMoneyRupeeCircleLine />
+                          <span className="text-[14px]">{job.salary}</span>
+                        </div>
+
+                        <div className="text-gray-700 flex flex-wrap gap-6 mt-2 text-sm">
+                          <div className="flex gap-2 items-center">
+                            <MdLocationOn />
+                            <span>{job.location}</span>
+                          </div>
+                          <div className="flex gap-2 items-center">
+                            <MdMailOutline />
+                            <span>{job.type}</span>
+                          </div>
+                          <div className="flex gap-2 items-center">
+                            <MdOutlineDateRange />
+                            <span>{job.date}</span>
+                          </div>
+                        </div>
+                      </div>
+                      <div className="w-full flex justify-start mt-2">
+                        <Button
+                          href="#"
+                          className="!bg-[#8928e2] !text-white text-lg px-6 py-3 rounded whitespace-nowrap"
+                        >
+                          Apply Now
+                        </Button>
+                      </div>
+                    </div>
+                  </Card>
+                ))
+              ) : (
+                <p className="text-white text-center col-span-full">No jobs found matching your criteria.</p>
+              )}
+            </div>
           </div>
 
           {/* Mentors Section */}
