@@ -283,7 +283,7 @@ export const loginWithGoogle = async (selectedRole) => {
     
     // If user doesn't exist, auto-create account (new user flow)
     if (!userData) {
-      console.log('New Google user detected, creating account...');
+              // New Google user detected, creating account
       
       // Extract name from Google profile
       const displayName = user.displayName || '';

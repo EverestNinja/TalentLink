@@ -94,8 +94,7 @@ const PostJob = () => {
     setSubmitMessage("");
 
     try {
-      console.log('Submitting form with user:', user);
-      console.log('Form data:', formData);
+      
 
       if (!user?.uid) {
         throw new Error('User not authenticated');

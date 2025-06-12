@@ -66,7 +66,7 @@ const Navbar = React.memo(() => {
   const handleSettingsClick = () => {
     setIsProfileMenuOpen(false);
     // Navigate to settings page (you can create this later)
-    console.log('Navigate to settings page');
+          // Navigate to settings page
   };
 
   // Show navbar skeleton while loading auth state (instead of nothing)
@@ -248,14 +248,6 @@ const Navbar = React.memo(() => {
               href="/"
             >
               Home
-            </a>
-            <a
-              className={`relative px-4 py-2 text-white/90 hover:text-white font-medium text-sm modern-nav-item ${
-                location.pathname === "/pricing" ? "bg-[#7614c2] text-white" : ""
-              }`}
-              href="/pricing"
-            >
-              Pricing
             </a>
             <a
               className={`cursor-pointer relative px-4 py-2 text-white/90 hover:text-white font-medium text-sm modern-nav-item ${
@@ -562,14 +554,6 @@ const Navbar = React.memo(() => {
                   location.pathname === "/" ? "bg-[#7614c2] text-white" : ""
                 }`}
                 href="/"
-              >
-                Home
-              </a>
-              <a
-                className={`w-full px-4 py-3 text-white/90 hover:text-white font-medium text-sm modern-nav-item-mobile ${
-                  location.pathname === "/pricing" ? "bg-[#7614c2] text-white" : ""
-                }`}
-                href="/pricing"
               >
                 Home
               </a>

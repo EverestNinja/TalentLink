@@ -4,8 +4,6 @@ import { db } from './config';
 // Add a new job posting
 export const createJobPosting = async (jobData, organizationId) => {
   try {
-    console.log('Creating job posting with data:', jobData);
-    console.log('Organization ID:', organizationId);
 
     // Validate required fields
     if (!jobData.title || !jobData.company || !jobData.description || !jobData.requirements) {
@@ -37,12 +35,8 @@ export const createJobPosting = async (jobData, organizationId) => {
       views: 0,
     };
 
-    console.log('Job payload:', jobPayload);
-
     // Add job to Firestore
     const docRef = await addDoc(collection(db, 'jobs'), jobPayload);
-    
-    console.log('Job created successfully with ID:', docRef.id);
 
     return {
       success: true,
@@ -75,7 +69,6 @@ export const createJobPosting = async (jobData, organizationId) => {
 // Get all active job postings with optional filters
 export const getJobPostings = async (filters = {}) => {
   try {
-    console.log('Fetching job postings with filters:', filters);
     
     let jobQuery = collection(db, 'jobs');
     const queryConstraints = [where('isActive', '==', true)];
@@ -112,8 +105,6 @@ export const getJobPostings = async (filters = {}) => {
       });
     });
 
-    console.log('Fetched jobs:', jobs.length);
-
     return {
       success: true,
       jobs,
@@ -128,7 +119,6 @@ export const getJobPostings = async (filters = {}) => {
 // Get jobs posted by a specific organization
 export const getJobsByOrganization = async (organizationId) => {
   try {
-    console.log('Fetching jobs for organization:', organizationId);
     
     const jobQuery = query(
       collection(db, 'jobs'),
@@ -145,8 +135,6 @@ export const getJobsByOrganization = async (organizationId) => {
         ...doc.data()
       });
     });
-
-    console.log('Fetched organization jobs:', jobs.length);
 
     return {
       success: true,

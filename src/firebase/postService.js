@@ -18,9 +18,6 @@ import { db } from './config';
 // Create a new post
 export const createPost = async (postData, authorId) => {
   try {
-    console.log('Creating post with data:', postData);
-    console.log('Author ID:', authorId);
-
     // Validate required fields
     if (!postData.content || !postData.author || !postData.role) {
       throw new Error('Missing required fields: content, author, and role are required');
@@ -47,12 +44,8 @@ export const createPost = async (postData, authorId) => {
       isActive: true,
     };
 
-    console.log('Post payload:', postPayload);
-
     // Add post to Firestore
     const docRef = await addDoc(collection(db, 'posts'), postPayload);
-    
-    console.log('Post created successfully with ID:', docRef.id);
 
     return {
       success: true,
@@ -82,7 +75,6 @@ export const createPost = async (postData, authorId) => {
 // Get all posts with optional filters
 export const getPosts = async (filters = {}) => {
   try {
-    console.log('Fetching posts with filters:', filters);
     
     let postQuery = collection(db, 'posts');
     const queryConstraints = [where('isActive', '==', true)];
@@ -118,8 +110,6 @@ export const getPosts = async (filters = {}) => {
       });
     });
 
-    console.log('Fetched posts:', posts.length);
-
     return {
       success: true,
       posts,
@@ -134,8 +124,6 @@ export const getPosts = async (filters = {}) => {
 // Get posts by a specific user
 export const getPostsByUser = async (userId) => {
   try {
-    console.log('Fetching posts for user:', userId);
-    
     const postQuery = query(
       collection(db, 'posts'),
       where('authorId', '==', userId),
@@ -157,8 +145,6 @@ export const getPostsByUser = async (userId) => {
         likeCount: postData.likeCount || 0 // Count of likes
       });
     });
-
-    console.log('Fetched user posts:', posts.length);
 
     return {
       success: true,

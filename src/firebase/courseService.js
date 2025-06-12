@@ -4,8 +4,6 @@ import { db } from './config';
 // Add a new course
 export const createCourse = async (courseData, mentorId) => {
   try {
-    console.log('Creating course with data:', courseData);
-    console.log('Mentor ID:', mentorId);
 
     // Validate required fields
     if (!courseData.title || !courseData.description || !courseData.objectives || !courseData.price) {
@@ -42,12 +40,8 @@ export const createCourse = async (courseData, mentorId) => {
       views: 0,
     };
 
-    console.log('Course payload:', coursePayload);
-
     // Add course to Firestore
     const docRef = await addDoc(collection(db, 'courses'), coursePayload);
-    
-    console.log('Course created successfully with ID:', docRef.id);
 
     return {
       success: true,
@@ -80,7 +74,6 @@ export const createCourse = async (courseData, mentorId) => {
 // Get all active courses with optional filters
 export const getCourses = async (filters = {}) => {
   try {
-    console.log('Fetching courses with filters:', filters);
     
     let courseQuery = collection(db, 'courses');
     const queryConstraints = [where('isActive', '==', true)];
@@ -125,8 +118,6 @@ export const getCourses = async (filters = {}) => {
       });
     });
 
-    console.log('Fetched courses:', courses.length);
-
     return {
       success: true,
       courses,
@@ -141,7 +132,6 @@ export const getCourses = async (filters = {}) => {
 // Get courses created by a specific mentor
 export const getCoursesByMentor = async (mentorId) => {
   try {
-    console.log('Fetching courses for mentor:', mentorId);
     
     const courseQuery = query(
       collection(db, 'courses'),
@@ -158,8 +148,6 @@ export const getCoursesByMentor = async (mentorId) => {
         ...doc.data()
       });
     });
-
-    console.log('Fetched mentor courses:', courses.length);
 
     return {
       success: true,

@@ -39,11 +39,9 @@ const Courses = React.memo(() => {
         setCoursesLoading(true);
         setCoursesError(null);
         
-        console.log('Fetching courses from Firebase...');
         const result = await getCourses({ limit: 50 });
         
         if (result.success) {
-          console.log('Courses fetched successfully:', result.courses.length);
           setCoursesData(result.courses);
         } else {
           console.error('Failed to fetch courses:', result.error);
@@ -341,6 +339,9 @@ const CourseCard = ({ course, onEnrollClick }) => {
 
 // Course Details Modal Component
 const CourseDetailsModal = ({ course, isOpen, onClose }) => {
+  const { isAuthenticated } = useAuth();
+  const navigate = useNavigate();
+
   if (!isOpen || !course) return null;
 
   return (
@@ -452,15 +453,32 @@ const CourseDetailsModal = ({ course, isOpen, onClose }) => {
                 </div>
               </div>
 
-              <button
-                className="w-full bg-gradient-to-r from-[#8928e2] to-[#b263fc] text-white py-3 px-6 rounded-lg hover:from-[#7a1fd8] hover:to-[#a133d7] transition font-medium text-lg"
-                onClick={() => {
-                  // Handle enrollment logic here
-                  alert('Enrollment functionality coming soon!');
-                }}
-              >
-                Enroll Now - {course.currency} {course.price}
-              </button>
+              {isAuthenticated ? (
+                <button
+                  className="w-full bg-gradient-to-r from-[#8928e2] to-[#b263fc] text-white py-3 px-6 rounded-lg hover:from-[#7a1fd8] hover:to-[#a133d7] transition font-medium text-lg"
+                  onClick={() => {
+                    // Handle enrollment logic here
+                    alert('Enrollment functionality coming soon!');
+                  }}
+                >
+                  Enroll Now - {course.currency} {course.price}
+                </button>
+              ) : (
+                <div className="text-center">
+                  <div className="text-gray-600 mb-4">
+                    Please log in to enroll in this course
+                  </div>
+                  <button
+                    className="w-full bg-gradient-to-r from-[#8928e2] to-[#b263fc] text-white py-3 px-6 rounded-lg hover:from-[#7a1fd8] hover:to-[#a133d7] transition font-medium text-lg"
+                    onClick={() => {
+                      onClose();
+                      navigate('/login');
+                    }}
+                  >
+                    Log In to Enroll
+                  </button>
+                </div>
+              )}
             </div>
           </div>
         </div>

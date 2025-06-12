@@ -145,7 +145,7 @@ const ProfileComplete = () => {
         submitData.firstName = nameParts[0] || '';
         submitData.lastName = nameParts.slice(1).join(' ') || '';
         submitData.displayName = profileData.name;
-        delete submitData.name; // Remove the temporary name field
+        delete submitData.name;
       }
 
       // Process any array fields that might still be strings

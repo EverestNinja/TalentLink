@@ -49,11 +49,9 @@ const Jobs = React.memo(() => {
         setJobsLoading(true);
         setJobsError(null);
         
-        console.log('Fetching jobs from Firebase...');
         const result = await getJobPostings({ limit: 50 });
         
         if (result.success) {
-          console.log('Jobs fetched successfully:', result.jobs.length);
           
           // Transform Firebase data to match the existing format
           const transformedJobs = result.jobs.map(job => ({

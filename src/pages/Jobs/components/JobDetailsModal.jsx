@@ -3,8 +3,12 @@ import { Card, Button, Typography, Input, Textarea } from "@material-tailwind/re
 import { MdLocationOn, MdOutlineDateRange, MdClose, MdAttachFile } from "react-icons/md";
 import { RiMoneyRupeeCircleLine } from "react-icons/ri";
 import { FaBuilding, FaClock, FaMapMarkerAlt } from "react-icons/fa";
+import { useAuth } from "../../../contexts/AuthContext";
+import { useNavigate } from "react-router-dom";
 
 const JobDetailsModal = ({ job, isOpen, onClose }) => {
+  const { isAuthenticated } = useAuth();
+  const navigate = useNavigate();
   const [applicationData, setApplicationData] = useState({
     name: '',
     email: '',
@@ -237,6 +241,25 @@ const JobDetailsModal = ({ job, isOpen, onClose }) => {
                       <Typography className="text-gray-600">
                         Unfortunately, the deadline for this position has passed.
                       </Typography>
+                    </div>
+                  ) : !isAuthenticated ? (
+                    <div className="text-center py-8">
+                      <div className="text-[#8928e2] text-4xl mb-4">🔒</div>
+                      <Typography variant="h6" className="text-gray-800 mb-2">
+                        Login Required
+                      </Typography>
+                      <Typography className="text-gray-600 mb-4">
+                        Please log in to apply for this position
+                      </Typography>
+                      <Button
+                        onClick={() => {
+                          onClose();
+                          navigate('/login');
+                        }}
+                        className="!bg-[#8928e2] !text-white hover:!bg-[#7820c7]"
+                      >
+                        Log In to Apply
+                      </Button>
                     </div>
                   ) : (
                     <form onSubmit={handleSubmitApplication} className="space-y-6">

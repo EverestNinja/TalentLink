@@ -86,8 +86,7 @@ const PostCourse = () => {
     setSubmitMessage("");
 
     try {
-      console.log('Submitting course with user:', user);
-      console.log('Form data:', formData);
+      
 
       if (!user?.uid) {
         throw new Error('User not authenticated');
