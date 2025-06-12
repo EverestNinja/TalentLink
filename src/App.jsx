@@ -17,6 +17,8 @@ import Login from './pages/Login/Login';
 import SignupPage from './pages/Login/signup';
 import ProfileComplete from './pages/Profile/ProfileComplete';
 import ProfileView from './pages/Profile/ProfileView';
+import ChoosePlan from './pages/Pricing/Pricing';
+import ResetPassword from './pages/Login/ResetPassword'
 
 function App() {
   useEffect(() => {
