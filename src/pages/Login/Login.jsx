@@ -88,7 +88,12 @@ export default function RoleBasedLoginPage() {
   };
 
   const handleLoginSuccess = (result) => {
-    setSuccess(result.message);
+    // Set appropriate success message
+    const successMessage = result.isNewUser 
+      ? "🎉 Welcome to TalentLink! Account created successfully. Redirecting to complete your profile..."
+      : "✅ Welcome back! Login successful. Redirecting to your dashboard...";
+    
+    setSuccess(successMessage);
 
     // Reset form
     setFormData({
@@ -103,10 +108,10 @@ export default function RoleBasedLoginPage() {
       result.isNewUser
     );
 
-    // Navigate after successful login/signup
+    // Navigate after successful login/signup with shorter delay for better UX
     setTimeout(() => {
       navigate(redirectPath);
-    }, 1500);
+    }, 2000);
   };
 
   const handleEmailLogin = async (e) => {
@@ -340,6 +345,10 @@ export default function RoleBasedLoginPage() {
                 "Continue with Google"
               )}
             </Button>
+
+            <Typography variant="caption" color="textSecondary" sx={{ textAlign: 'center', display: 'block', mb: 2 }}>
+              New to TalentLink? Google login will create your account automatically
+            </Typography>
 
             <Divider sx={{ mb: 3 }}>
               <Typography variant="body2" color="textSecondary">

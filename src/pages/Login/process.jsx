@@ -186,8 +186,14 @@ export const getRedirectPath = (role, userData, isNewUser = false) => {
     return `/profile/complete?role=${role}`;
   }
   
-  // For existing users logging in, go to homepage
-  return '/';
+  // For existing users, check if profile is complete
+  if (userData && userData.profileComplete === false) {
+    // If profile incomplete, redirect to complete it
+    return `/profile/complete?role=${role}`;
+  }
+  
+  // For users with complete profiles, redirect to feed (main app)
+  return '/feed';
 };
 
 // Get user document from Firestore
@@ -218,7 +224,9 @@ export const loginWithEmail = async (email, password, selectedRole) => {
     const userData = await getUserDocument(user.uid);
     
     if (!userData) {
-      throw new Error('User data not found. Please contact support.');
+      // Sign out the user since no account exists in our system
+      await auth.signOut();
+      throw new Error('No account found with this email. Please sign up first or use the correct login portal.');
     }
     
     // Validate role - check if user's role matches the selected login role
@@ -246,22 +254,24 @@ export const loginWithEmail = async (email, password, selectedRole) => {
   } catch (error) {
     // Handle Firebase auth errors
     if (error.code === 'auth/user-not-found') {
-      throw new Error('No account found with this email address');
+      throw new Error('No account found with this email address. Please sign up first or try Google login.');
     } else if (error.code === 'auth/wrong-password') {
-      throw new Error('Incorrect password');
+      throw new Error('Incorrect password. Please check your password and try again.');
     } else if (error.code === 'auth/invalid-email') {
-      throw new Error('Invalid email address');
+      throw new Error('Invalid email address format');
     } else if (error.code === 'auth/user-disabled') {
-      throw new Error('This account has been disabled');
+      throw new Error('This account has been disabled. Please contact support.');
     } else if (error.code === 'auth/too-many-requests') {
-      throw new Error('Too many failed login attempts. Please try again later.');
+      throw new Error('Too many failed login attempts. Please wait a few minutes and try again.');
+    } else if (error.code === 'auth/invalid-credential') {
+      throw new Error('Invalid email or password. Please check your credentials.');
     } else {
       throw new Error(error.message || 'Failed to login');
     }
   }
 };
 
-// Google login function
+// Unified Google login/signup function
 export const loginWithGoogle = async (selectedRole) => {
   try {
     const provider = new GoogleAuthProvider();
@@ -271,11 +281,31 @@ export const loginWithGoogle = async (selectedRole) => {
     // Get user document from Firestore
     const userData = await getUserDocument(user.uid);
     
+    // If user doesn't exist, auto-create account (new user flow)
     if (!userData) {
-      throw new Error('Account not found. Please sign up first.');
+      console.log('New Google user detected, creating account...');
+      
+      // Extract name from Google profile
+      const displayName = user.displayName || '';
+      const [firstName = '', lastName = ''] = displayName.split(' ');
+      
+      // Create user document for new user
+      const newUserData = await createUserDocument(user, {
+        firstName: firstName || 'User',
+        lastName: lastName || '',
+        role: selectedRole
+      });
+      
+      return {
+        success: true,
+        message: 'Welcome to TalentLink! Please complete your profile to get started.',
+        userData: newUserData,
+        user,
+        isNewUser: true
+      };
     }
     
-    // Validate role - check if user's role matches the selected login role
+    // Existing user flow - validate role
     if (userData.role !== selectedRole) {
       // Sign out the user since they logged in through wrong portal
       await auth.signOut();
@@ -289,21 +319,29 @@ export const loginWithGoogle = async (selectedRole) => {
       throw new Error(`You are registered as a ${roleNames[userData.role]}. Please use the ${roleNames[userData.role]} login portal instead.`);
     }
     
+    // Existing user login successful
     return {
       success: true,
-      message: 'Login successful with Google!',
+      message: 'Welcome back! Login successful.',
       userData,
       user,
       isNewUser: false
     };
     
   } catch (error) {
+    // Handle specific Firebase errors
     if (error.code === 'auth/popup-closed-by-user') {
       throw new Error('Google login was cancelled');
     } else if (error.code === 'auth/popup-blocked') {
       throw new Error('Popup was blocked. Please allow popups and try again.');
+    } else if (error.code === 'auth/account-exists-with-different-credential') {
+      throw new Error('An account with this email already exists. Please use email login or a different Google account.');
     } else {
-      throw new Error(error.message || 'Failed to login with Google');
+      // If it's our custom error (wrong role), don't wrap it
+      if (error.message.includes('registered as a')) {
+        throw error;
+      }
+      throw new Error(error.message || 'Failed to continue with Google');
     }
   }
 };

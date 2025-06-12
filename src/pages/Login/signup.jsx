@@ -18,7 +18,7 @@ import OrgIcon from "@mui/icons-material/Business";
 import GoogleIcon from "@mui/icons-material/Google";
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
-import { signupWithEmail, signupWithGoogle, getRedirectPath } from "./process";
+import { signupWithEmail, loginWithGoogle, getRedirectPath } from "./process";
 
 import normalBG from "../../assets/normal.svg";
 import userBG from "../../assets/userbg.svg";
@@ -96,7 +96,12 @@ export default function SignupPage() {
   // User document creation is now handled in process.jsx
 
   const handleSignupSuccess = (result) => {
-    setSuccess(result.message);
+    // Set appropriate success message
+    const successMessage = result.isNewUser 
+      ? "🎉 Welcome to TalentLink! Account created successfully. Redirecting to complete your profile..."
+      : "✅ Welcome back! You already have an account. Redirecting to your dashboard...";
+    
+    setSuccess(successMessage);
 
     // Reset form
     setFormData({
@@ -114,10 +119,10 @@ export default function SignupPage() {
       result.isNewUser
     );
 
-    // Navigate after successful signup
+    // Navigate after successful signup with better timing
     setTimeout(() => {
       navigate(redirectPath);
-    }, 1500);
+    }, 2000);
   };
 
   const handleEmailSignup = async (e) => {
@@ -140,7 +145,8 @@ export default function SignupPage() {
     setError("");
 
     try {
-      const result = await signupWithGoogle(selectedRole);
+      // Use unified Google flow that handles both signup and login
+      const result = await loginWithGoogle(selectedRole);
       handleSignupSuccess(result);
     } catch (error) {
       setError(error.message);
@@ -349,6 +355,10 @@ export default function SignupPage() {
                 "Continue with Google"
               )}
             </Button>
+
+            <Typography variant="caption" color="textSecondary" sx={{ textAlign: 'center', display: 'block', mb: 2 }}>
+              Already have a Google account? It will log you in automatically
+            </Typography>
 
             <Divider sx={{ mb: 3 }}>
               <Typography variant="body2" color="textSecondary">

@@ -11,6 +11,7 @@ import Jobs from './pages/Jobs/Jobs';
 import PostJob from './pages/Jobs/PostJob';
 import PostCourse from './pages/Courses/PostCourse';
 import Courses from './pages/Courses/Courses';
+import ManagePosts from './pages/Posts/ManagePosts';
 import About from './pages/About/About';
 import Contact from './pages/Contact/Contact';
 import Login from './pages/Login/Login';
@@ -45,6 +46,7 @@ function App() {
           <Route path="/jobs/post" element={<PostJob />} />
           <Route path="/courses" element={<Courses />} />
           <Route path="/courses/manage" element={<PostCourse />} />
+          <Route path="/posts/manage" element={<ManagePosts />} />
           <Route path="/resources" element={<Resources />} />
           <Route path="/about" element={<About />} />
           <Route path="/contact" element={<Contact />} />
