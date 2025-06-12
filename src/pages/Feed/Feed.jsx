@@ -15,6 +15,8 @@ import {
 } from "@mui/material";
 import { MdLocationOn } from "react-icons/md";
 import { RiMoneyRupeeCircleLine } from "react-icons/ri";
+import { useAuth } from "../../contexts/AuthContext";
+import MentorsSection from "../Jobs/components/MentorsSection";
 
 const initialPosts = [
   {
@@ -56,16 +58,13 @@ const jobsData = [
   },
 ];
 
-const mentorsData = [
-  { name: "Alice Johnson", expertise: "Frontend Development", company: "Tech Solutions" },
-  { name: "Bob Smith", expertise: "Backend Engineering", company: "InnovateX" },
-  { name: "Carol Lee", expertise: "UI/UX Design", company: "Creative Minds" },
-];
-
 function Feed() {
   const [posts, setPosts] = useState(initialPosts);
   const [newPost, setNewPost] = useState("");
   const [role, setRole] = useState("Job Seeker");
+  
+  // Auth context for MentorsSection
+  const { isAuthenticated, loading: authLoading } = useAuth();
 
   const handlePost = () => {
     if (!newPost.trim()) return;
@@ -163,22 +162,20 @@ function Feed() {
           </Box>
 
           {/* Mentors */}
-          <Box width="25%" bgcolor="white" p={2} overflow="auto" borderRadius={2} height="100%" boxShadow={2}>
-            <Typography variant="h6" color="primary" gutterBottom>
-              Top Mentors
-            </Typography>
-            {mentorsData.map((mentor, idx) => (
-              <Paper key={idx} sx={{ p: 2, mb: 2 }} elevation={1}>
-                <Typography variant="subtitle1" color="primary">
-                  {mentor.name}
-                </Typography>
-                <Typography variant="body2">Expertise: {mentor.expertise}</Typography>
-                <Typography variant="body2">Company: {mentor.company}</Typography>
-                <Button variant="contained" color="success" size="small" sx={{ mt: 1 }}>
-                  Connect
-                </Button>
-              </Paper>
-            ))}
+          <Box width="25%" bgcolor="white" borderRadius={2} height="100%" boxShadow={2} display="flex" flexDirection="column">
+            <Box p={2} pb={1}>
+              <Typography variant="h6" color="primary" gutterBottom>
+                Available Mentors
+              </Typography>
+            </Box>
+            <Box flex={1} overflow="hidden" px={2} pb={2}>
+              <MentorsSection 
+                isAuthenticated={isAuthenticated}
+                authLoading={authLoading}
+                variant="compact"
+                hideTitle={true}
+              />
+            </Box>
           </Box>
         </Box>
       </Container>
