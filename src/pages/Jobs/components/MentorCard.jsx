@@ -4,11 +4,7 @@ const MentorCard = ({ mentor, variant = "default" }) => {
   const isCompact = variant === "compact";
   
   return (
-    <div className={`backdrop-blur-md rounded-xl hover:scale-[1.02] transition ${
-      isCompact 
-        ? "p-3 bg-gradient-to-br from-purple-100 to-blue-100 border border-purple-200" 
-        : "p-6 bg-white/10 border border-white/20"
-    }`}>
+    <div className="backdrop-blur-md rounded-xl p-3 bg-gradient-to-r from-[#b263fc] to-[#8928e2] ">
       <div className={`flex items-start ${isCompact ? "gap-2" : "gap-4"}`}>
         {/* Mentor Image */}
         <div className="flex-shrink-0">
@@ -117,7 +113,7 @@ const MentorCard = ({ mentor, variant = "default" }) => {
           )}
           
           {/* Connect Button */}
-          <div className={`flex ${isCompact ? "justify-center" : "justify-end"}`}>
+          <div className={`flex ${isCompact ? "justify-end" : "justify-start"}`}>
             <a 
               href={mentor.linkedinURL}
               target="_blank"

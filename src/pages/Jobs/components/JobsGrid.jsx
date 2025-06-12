@@ -7,8 +7,8 @@ const JobsGrid = ({ jobs, onApplyClick }) => {
     <div>
       {/* Header with job count */}
       <div className="flex items-center gap-3 mb-6">
-        <MdWorkOutline className="text-white text-2xl" />
-        <h2 className="text-2xl font-semibold">
+        <MdWorkOutline className="text-[#8929e2] text-2xl" />
+        <h2 className="text-2xl font-semibold text-[#8929e2]">
           {jobs.length > 0 ? `${jobs.length} Job${jobs.length !== 1 ? 's' : ''} Available` : 'Jobs'}
         </h2>
       </div>

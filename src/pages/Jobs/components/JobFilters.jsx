@@ -18,7 +18,7 @@ const JobFilters = ({
   };
 
   return (
-    <div className="mb-10">
+    <div className="mb-10 -mt-5">
       {/* Search Bar */}
       <div className="relative mb-6">
         <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
@@ -29,7 +29,7 @@ const JobFilters = ({
           placeholder="Search jobs by title, company, or description..."
           value={searchTerm}
           onChange={(e) => onSearchChange(e.target.value)}
-          className="w-full pl-12 pr-4 py-3 rounded-xl bg-white text-black placeholder-gray-500 shadow-lg focus:outline-none focus:ring-2 focus:ring-[#8928e2] focus:border-transparent transition-all duration-200"
+          className="w-full pl-12 pr-4 py-4 border border-[#000] rounded-xl bg-white text-black placeholder-gray-500 shadow-lg focus:outline-none focus:ring-2 focus:ring-[#8928e2] focus:border-transparent transition-all duration-200"
         />
       </div>
 
@@ -43,7 +43,7 @@ const JobFilters = ({
           <select
             value={selectedCompany}
             onChange={(e) => onCompanyChange(e.target.value)}
-            className="w-full pl-12 pr-4 py-3 rounded-xl bg-white text-black shadow-lg focus:outline-none focus:ring-2 focus:ring-[#8928e2] focus:border-transparent transition-all duration-200 appearance-none cursor-pointer"
+            className="w-full  py-4 border border-[#000] pl-12 pr-4 rounded-xl bg-white text-black shadow-lg focus:outline-none focus:ring-2 focus:ring-[#8928e2] focus:border-transparent transition-all duration-200 appearance-none cursor-pointer"
           >
             <option value="">All Companies</option>
             {companies.filter(Boolean).map((company, i) => (
@@ -67,7 +67,7 @@ const JobFilters = ({
           <select
             value={selectedLocation}
             onChange={(e) => onLocationChange(e.target.value)}
-            className="w-full pl-12 pr-4 py-3 rounded-xl bg-white text-black shadow-lg focus:outline-none focus:ring-2 focus:ring-[#8928e2] focus:border-transparent transition-all duration-200 appearance-none cursor-pointer"
+            className="w-full pl-12 pr-4  py-4 border border-[#000] rounded-xl bg-white text-black shadow-lg focus:outline-none focus:ring-2 focus:ring-[#8928e2] focus:border-transparent transition-all duration-200 appearance-none cursor-pointer"
           >
             <option value="">All Locations</option>
             {locations.filter(Boolean).map((location, i) => (
@@ -92,7 +92,7 @@ const JobFilters = ({
                 onCompanyChange('');
                 onLocationChange('');
               }}
-              className="w-full py-3 px-4 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-xl font-medium transition-all duration-200 shadow-lg hover:shadow-xl"
+              className="w-full  py-4 border border-[#000] px-4 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-xl font-medium transition-all duration-200 shadow-lg hover:shadow-xl"
             >
               Clear Filters
             </button>
@@ -102,8 +102,8 @@ const JobFilters = ({
 
       {/* Active Filters Display */}
       {(searchTerm || selectedCompany || selectedLocation) && (
-        <div className="mt-4 flex flex-wrap gap-2">
-          <span className="text-white text-sm font-medium">Active filters:</span>
+        <div className="mt-4 flex items-center gap-2">
+          <span className="text-black text-sm font-medium">Active filters:</span>
           {searchTerm && (
             <span className="bg-white bg-opacity-20 text-white px-3 py-1 rounded-full text-sm flex items-center gap-2">
               Search: "{searchTerm}"
@@ -116,7 +116,7 @@ const JobFilters = ({
             </span>
           )}
           {selectedCompany && (
-            <span className="bg-white bg-opacity-20 text-white px-3 py-1 rounded-full text-sm flex items-center gap-2">
+            <span className="bg-white bg-opacity-20 text-[#8929e2] px-3 py-1 rounded-full text-sm flex items-center gap-2">
               Company: {selectedCompany}
               <button 
                 onClick={() => onCompanyChange('')}
@@ -127,7 +127,7 @@ const JobFilters = ({
             </span>
           )}
           {selectedLocation && (
-            <span className="bg-white bg-opacity-20 text-white px-3 py-1 rounded-full text-sm flex items-center gap-2">
+            <span className="bg-white bg-opacity-20 text-[#8929e2] px-3 py-1 rounded-full text-sm flex items-center gap-2">
               Location: {selectedLocation}
               <button 
                 onClick={() => onLocationChange('')}

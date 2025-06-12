@@ -93,7 +93,18 @@ function Feed() {
   };
 
   return (
-    <Box sx={{ minHeight: "100vh", pt: 8, background: "#f4f4f4" }}>
+    <>
+    <section
+  className="lg:px-12 sm:px-8 x-sm:px-4 py-28 flex justify-center items-center bg-gradient-to-r from-[#b263fc] to-[#8929e2] pb-12"
+>
+  <h1
+    className="md:text-[5rem] sm:text-[6rem] x-sm:text-[3rem] font-bold leading-none text-white text-center"
+  >
+    TalentLink  <br />
+    Feed
+  </h1>
+</section>
+    <Box sx={{ minHeight: "100vh", pt: 3, background: "#f4f4f4" }}>
       <Container maxWidth="xl">
         {/* <Typography variant="h4" align="center" color="primary" gutterBottom>
           Mentor & Job Seeker Feed
@@ -102,12 +113,12 @@ function Feed() {
         <Box display="flex" gap={2} mt={4} height="80vh">
           {/* Jobs */}
           <Box width="25%" bgcolor="white" p={2} overflow="auto" borderRadius={2} height="100%" boxShadow={2}>
-            <Typography variant="h6" color="primary" gutterBottom>
+            <Typography variant="h6" color="#8929e2" gutterBottom>
               Latest Jobs
             </Typography>
             {jobsData.map((job) => (
               <Paper key={job.id} variant="outlined" sx={{ p: 2, mb: 2 }}>
-                <Typography color="primary" fontWeight="bold">
+                <Typography color="#8929e2" fontWeight="bold">
                   {job.title}
                 </Typography>
                 <Typography variant="body2">{job.company}</Typography>
@@ -147,7 +158,7 @@ function Feed() {
                   fullWidth
                 />
                 <Box display="flex" justifyContent="flex-end">
-                  <Button variant="contained" onClick={handlePost} color="primary">
+                  <Button variant="contained" onClick={handlePost} className="!bg-[#8929e2]">
                     Post
                   </Button>
                 </Box>
@@ -164,7 +175,7 @@ function Feed() {
           {/* Mentors */}
           <Box width="25%" bgcolor="white" borderRadius={2} height="100%" boxShadow={2} display="flex" flexDirection="column">
             <Box p={2} pb={1}>
-              <Typography variant="h6" color="primary" gutterBottom>
+              <Typography variant="h6" color="#8929e2" gutterBottom>
                 Available Mentors
               </Typography>
             </Box>
@@ -180,6 +191,7 @@ function Feed() {
         </Box>
       </Container>
     </Box>
+    </>
   );
 }
 
@@ -219,7 +231,7 @@ function PostCard({ post, onComment }) {
           placeholder="Add a comment..."
           fullWidth
         />
-        <Button variant="contained" color="success" onClick={handleAddComment}>
+        <Button variant="contained" className="bg-[#8929E2]" onClick={handleAddComment}>
           Comment
         </Button>
       </Box>
