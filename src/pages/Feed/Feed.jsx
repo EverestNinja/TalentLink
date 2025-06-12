@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Card,
   CardContent,
@@ -12,11 +12,16 @@ import {
   Paper,
   Divider,
   Container,
+  CircularProgress,
+  Alert,
 } from "@mui/material";
 import { MdLocationOn } from "react-icons/md";
 import { RiMoneyRupeeCircleLine } from "react-icons/ri";
 import { useAuth } from "../../contexts/AuthContext";
+import { useNavigate } from "react-router-dom";
 import MentorsSection from "../Jobs/components/MentorsSection";
+import JobDetailsModal from "../Jobs/components/JobDetailsModal";
+import { getJobPostings } from "../../firebase/jobService";
 
 const initialPosts = [
   {
@@ -37,34 +42,95 @@ const initialPosts = [
   },
 ];
 
-const jobsData = [
-  {
-    id: 1,
-    title: "Python Full Stack Developer",
-    company: "Tech Solutions",
-    salary: "150,000 NPR to 220,000 NPR",
-    location: "Kathmandu",
-    type: "On-site",
-    date: "2/28/2024",
-  },
-  {
-    id: 2,
-    title: "React Developer",
-    company: "InnovateX",
-    salary: "100,000 NPR to 150,000 NPR",
-    location: "Pokhara",
-    type: "Remote",
-    date: "3/05/2024",
-  },
-];
-
 function Feed() {
   const [posts, setPosts] = useState(initialPosts);
   const [newPost, setNewPost] = useState("");
   const [role, setRole] = useState("Job Seeker");
   
+  // Jobs state management
+  const [jobsData, setJobsData] = useState([]);
+  const [jobsLoading, setJobsLoading] = useState(true);
+  const [jobsError, setJobsError] = useState(null);
+  
+  // Modal state for job applications
+  const [selectedJob, setSelectedJob] = useState(null);
+  const [isJobModalOpen, setIsJobModalOpen] = useState(false);
+  
   // Auth context for MentorsSection
   const { isAuthenticated, loading: authLoading } = useAuth();
+  const navigate = useNavigate();
+
+  // Handle job click - open job details modal
+  const handleJobClick = (job) => {
+    setSelectedJob(job);
+    setIsJobModalOpen(true);
+  };
+
+  // Handle apply click
+  const handleApplyClick = (e, job) => {
+    e.stopPropagation(); // Prevent triggering job click
+    setSelectedJob(job);
+    setIsJobModalOpen(true);
+  };
+
+  // Handle modal close
+  const handleJobModalClose = () => {
+    setIsJobModalOpen(false);
+    setSelectedJob(null);
+  };
+
+  // Navigate to full jobs page
+  const handleViewAllJobs = () => {
+    navigate('/jobs');
+  };
+
+  // Fetch latest jobs from Firebase
+  useEffect(() => {
+    const loadLatestJobs = async () => {
+      try {
+        setJobsLoading(true);
+        setJobsError(null);
+        
+        console.log('Fetching latest jobs for feed...');
+        const result = await getJobPostings({ limit: 10 }); // Get latest 10 jobs
+        
+        if (result.success) {
+          console.log('Latest jobs fetched successfully:', result.jobs.length);
+          
+          // Transform Firebase data to match the existing UI format
+          const transformedJobs = result.jobs.map(job => ({
+            id: job.id,
+            title: job.title,
+            company: job.company,
+            salary: job.salary || "Salary not specified",
+            location: job.location,
+            type: job.workMode || job.type,
+            date: new Date(job.createdAt).toLocaleDateString() || "Recently posted",
+            description: job.description,
+            requirements: job.requirements,
+            applicationEmail: job.applicationEmail,
+            applicationUrl: job.applicationUrl,
+            deadline: job.deadline,
+            createdAt: job.createdAt,
+          }));
+          
+          setJobsData(transformedJobs);
+        } else {
+          console.error('Failed to fetch latest jobs:', result.error);
+          setJobsError(result.error || 'Failed to load latest jobs');
+          setJobsData([]);
+        }
+      } catch (error) {
+        console.error('Error loading latest jobs:', error);
+        setJobsError(error.message);
+        setJobsData([]);
+      } finally {
+        setJobsLoading(false);
+      }
+    };
+
+    loadLatestJobs();
+  }, []);
 
   const handlePost = () => {
     if (!newPost.trim()) return;
@@ -92,42 +158,147 @@ function Feed() {
     );
   };
 
+  // Render jobs section with loading and error states
+  const renderJobsSection = () => {
+    if (jobsLoading) {
+      return (
+        <Box display="flex" justifyContent="center" alignItems="center" minHeight="200px">
+          <CircularProgress size={40} />
+        </Box>
+      );
+    }
+
+    if (jobsError) {
+      return (
+        <Alert severity="error" sx={{ mb: 2 }}>
+          <Typography variant="body2">
+            Failed to load latest jobs: {jobsError}
+          </Typography>
+          <Button 
+            size="small" 
+            onClick={() => window.location.reload()}
+            sx={{ mt: 1 }}
+          >
+            Retry
+          </Button>
+        </Alert>
+      );
+    }
+
+    if (jobsData.length === 0) {
+      return (
+        <Paper variant="outlined" sx={{ p: 3, textAlign: 'center' }}>
+          <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+            No jobs available at the moment.
+          </Typography>
+          <Button 
+            size="small" 
+            variant="outlined" 
+            onClick={handleViewAllJobs}
+          >
+            Browse All Jobs
+          </Button>
+        </Paper>
+      );
+    }
+
+    return (
+      <>
+        {jobsData.map((job) => (
+          <Paper 
+            key={job.id} 
+            variant="outlined" 
+            sx={{ 
+              p: 2, 
+              mb: 2, 
+              cursor: 'pointer', 
+              '&:hover': { 
+                bgcolor: 'grey.50',
+                boxShadow: 2
+              },
+              transition: 'all 0.2s ease'
+            }}
+            onClick={() => handleJobClick(job)}
+          >
+            <Typography color="primary" fontWeight="bold" sx={{ mb: 1 }}>
+              {job.title}
+            </Typography>
+            <Typography variant="body2" sx={{ mb: 1, color: 'text.secondary' }}>
+              {job.company}
+            </Typography>
+            
+            <Box display="flex" alignItems="center" color="text.secondary" sx={{ mb: 0.5 }}>
+              <MdLocationOn size={14} />
+              <Typography variant="caption" ml={1}>
+                {job.location}
+              </Typography>
+            </Box>
+            
+            <Box display="flex" alignItems="center" color="text.secondary" sx={{ mb: 1 }}>
+              <RiMoneyRupeeCircleLine size={14} />
+              <Typography variant="caption" ml={1}>
+                {job.salary}
+              </Typography>
+            </Box>
+            
+            <Box display="flex" justifyContent="space-between" alignItems="center">
+              <Typography variant="caption" color="text.disabled">
+                {job.date}
+              </Typography>
+              
+              <Button
+                size="small"
+                variant="contained"
+                color="primary"
+                onClick={(e) => handleApplyClick(e, job)}
+                sx={{ 
+                  py: 0.5,
+                  px: 1.5,
+                  fontSize: '0.7rem',
+                  textTransform: 'none'
+                }}
+              >
+                Apply
+              </Button>
+            </Box>
+            
+            {job.deadline && (
+              <Typography variant="caption" color="warning.main" display="block" sx={{ mt: 0.5 }}>
+                Deadline: {new Date(job.deadline).toLocaleDateString()}
+              </Typography>
+            )}
+          </Paper>
+        ))}
+        
+        {/* View All Jobs Button */}
+        <Button
+          fullWidth
+          variant="outlined"
+          color="primary"
+          onClick={handleViewAllJobs}
+          sx={{ mt: 2 }}
+        >
+          View All Jobs
+        </Button>
+      </>
+    );
+  };
+
   return (
     <Box sx={{ minHeight: "100vh", pt: 8, background: "#f4f4f4" }}>
       <Container maxWidth="xl">
-        {/* <Typography variant="h4" align="center" color="primary" gutterBottom>
-          Mentor & Job Seeker Feed
-        </Typography> */}
-
         <Box display="flex" gap={2} mt={4} height="80vh">
-          {/* Jobs */}
+          {/* Latest Jobs */}
           <Box width="25%" bgcolor="white" p={2} overflow="auto" borderRadius={2} height="100%" boxShadow={2}>
             <Typography variant="h6" color="primary" gutterBottom>
               Latest Jobs
+              {!jobsLoading && jobsData.length > 0 && (
+                <Typography component="span" variant="caption" color="text.secondary" sx={{ ml: 1 }}>
+                  ({jobsData.length})
+                </Typography>
+              )}
             </Typography>
-            {jobsData.map((job) => (
-              <Paper key={job.id} variant="outlined" sx={{ p: 2, mb: 2 }}>
-                <Typography color="primary" fontWeight="bold">
-                  {job.title}
-                </Typography>
-                <Typography variant="body2">{job.company}</Typography>
-                <Box display="flex" alignItems="center" color="text.secondary">
-                  <MdLocationOn />
-                  <Typography variant="body2" ml={1}>
-                    {job.location}
-                  </Typography>
-                </Box>
-                <Box display="flex" alignItems="center" color="text.secondary">
-                  <RiMoneyRupeeCircleLine />
-                  <Typography variant="body2" ml={1}>
-                    {job.salary}
-                  </Typography>
-                </Box>
-                <Typography variant="caption" color="text.disabled">
-                  {job.date}
-                </Typography>
-              </Paper>
-            ))}
+            {renderJobsSection()}
           </Box>
 
           {/* Feed */}
@@ -179,6 +350,13 @@ function Feed() {
           </Box>
         </Box>
       </Container>
+
+      {/* Job Details Modal */}
+      <JobDetailsModal
+        job={selectedJob}
+        isOpen={isJobModalOpen}
+        onClose={handleJobModalClose}
+      />
     </Box>
   );
 }

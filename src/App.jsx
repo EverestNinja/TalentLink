@@ -9,6 +9,8 @@ import Feed from './pages/Feed/Feed';
 import Resources from './pages/Resources/Resources';
 import Jobs from './pages/Jobs/Jobs';
 import PostJob from './pages/Jobs/PostJob';
+import PostCourse from './pages/Courses/PostCourse';
+import Courses from './pages/Courses/Courses';
 import About from './pages/About/About';
 import Contact from './pages/Contact/Contact';
 import Login from './pages/Login/Login';
@@ -39,6 +41,8 @@ function App() {
           <Route path="/feed" element={<Feed />} />
           <Route path="/jobs" element={<Jobs />} />
           <Route path="/jobs/post" element={<PostJob />} />
+          <Route path="/courses" element={<Courses />} />
+          <Route path="/courses/manage" element={<PostCourse />} />
           <Route path="/resources" element={<Resources />} />
           <Route path="/about" element={<About />} />
           <Route path="/contact" element={<Contact />} />

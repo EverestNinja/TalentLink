@@ -211,8 +211,8 @@ const Jobs = React.memo(() => {
           {!jobsError && jobsData.length === 0 && (
             <div className="mb-8 p-12 bg-white bg-opacity-10 rounded-2xl text-center backdrop-blur-sm border border-white border-opacity-20">
               <div className="text-6xl mb-6">💼</div>
-              <div className="text-2xl font-semibold mb-3">No Jobs Available</div>
-              <div className="text-lg opacity-90 max-w-md mx-auto">
+              <div className="text-2xl font-semibold mb-3 text-[#8928e2] ">No Jobs Available</div>
+              <div className="text-lg opacity-90 max-w-md mx-auto text-[#8928e2] ">
                 There are currently no job postings available. Check back later for new opportunities!
               </div>
             </div>
