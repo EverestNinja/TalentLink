@@ -21,6 +21,38 @@ service cloud.firestore {
                            resource.data.organizationId == request.auth.uid;
     }
     
+    // Courses collection - allow public read access for browsing
+    match /courses/{courseId} {
+      // Allow public read access to all active courses
+      allow read: if true;
+      
+      // Allow authenticated mentors to create courses
+      allow create: if request.auth != null && 
+                   request.resource.data.mentorId == request.auth.uid &&
+                   request.resource.data.isActive == true;
+      
+      // Allow mentors to update/delete their own courses
+      allow update, delete: if request.auth != null && 
+                           resource.data.mentorId == request.auth.uid;
+    }
+    
+    // Enrollments collection - allow authenticated access for course enrollments
+    match /enrollments/{enrollmentId} {
+      // Allow students to read their own enrollments
+      allow read: if request.auth != null && 
+                 (resource.data.studentId == request.auth.uid || 
+                  resource.data.mentorId == request.auth.uid);
+      
+      // Allow students to create enrollments for themselves
+      allow create: if request.auth != null && 
+                   request.resource.data.studentId == request.auth.uid;
+      
+      // Allow students and mentors to update enrollment status
+      allow update: if request.auth != null && 
+                   (resource.data.studentId == request.auth.uid || 
+                    resource.data.mentorId == request.auth.uid);
+    }
+    
     // Mentors collection - allow authenticated access
     match /mentors/{mentorId} {
       allow read, write: if request.auth != null;

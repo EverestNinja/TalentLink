@@ -9,13 +9,14 @@ import Feed from './pages/Feed/Feed';
 import Resources from './pages/Resources/Resources';
 import Jobs from './pages/Jobs/Jobs';
 import PostJob from './pages/Jobs/PostJob';
+import PostCourse from './pages/Courses/PostCourse';
+import Courses from './pages/Courses/Courses';
 import About from './pages/About/About';
 import Contact from './pages/Contact/Contact';
 import Login from './pages/Login/Login';
 import SignupPage from './pages/Login/signup';
 import ProfileComplete from './pages/Profile/ProfileComplete';
 import ProfileView from './pages/Profile/ProfileView';
-import ResetPassword from './pages/Login/ResetPassword';
 
 function App() {
   useEffect(() => {
@@ -40,12 +41,15 @@ function App() {
           <Route path="/feed" element={<Feed />} />
           <Route path="/jobs" element={<Jobs />} />
           <Route path="/jobs/post" element={<PostJob />} />
+          <Route path="/courses" element={<Courses />} />
+          <Route path="/courses/manage" element={<PostCourse />} />
           <Route path="/resources" element={<Resources />} />
           <Route path="/about" element={<About />} />
           <Route path="/contact" element={<Contact />} />
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<SignupPage />} />
           <Route path="/profile/complete" element={<ProfileComplete />} />
+          <Route path="/pricing" element={<ChoosePlan />} />
           <Route path="/profile" element={<ProfileView />} />
           <Route path="/resetpassword" element={<ResetPassword />} />
         </Routes>

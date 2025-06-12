@@ -201,7 +201,7 @@ const JobDetailsModal = ({ job, isOpen, onClose }) => {
                   {(job.applicationEmail || job.applicationUrl) && (
                     <div className="mt-6 pt-6 border-t border-gray-200">
                       <Typography variant="h6" className="text-gray-800 font-semibold mb-3">
-                        How to Apply
+                        Further Contact 
                       </Typography>
                       {job.applicationEmail && (
                         <div className="text-gray-700 mb-2">
@@ -239,7 +239,7 @@ const JobDetailsModal = ({ job, isOpen, onClose }) => {
                       </Typography>
                     </div>
                   ) : (
-                    <form onSubmit={handleSubmitApplication} className="space-y-4">
+                    <form onSubmit={handleSubmitApplication} className="space-y-6">
                       <div>
                         <Input
                           label="Full Name"
