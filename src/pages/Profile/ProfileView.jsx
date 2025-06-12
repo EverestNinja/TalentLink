@@ -135,7 +135,7 @@ const ProfileSection = ({ section, userData }) => (
   </Paper>
 );
 
-const ProfileView = () => {
+const ProfileView = React.memo(() => {
   const navigate = useNavigate();
   const { user, userData, isAuthenticated, loading, getDisplayName } = useAuth();
   const [completionStatus, setCompletionStatus] = useState(null);
@@ -307,6 +307,6 @@ const ProfileView = () => {
       </Box>
     </Box>
   );
-};
+});
 
 export default ProfileView; 

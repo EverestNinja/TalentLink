@@ -13,8 +13,11 @@ import { MdLocationOn } from "react-icons/md";
 import { RiMoneyRupeeCircleLine } from "react-icons/ri";
 import { MdMailOutline } from "react-icons/md";
 import { MdOutlineDateRange } from "react-icons/md";
-import CardActions from '@mui/material/CardActions';
-import img1 from '../../assets/hq720.webp'
+import CardActions from "@mui/material/CardActions";
+import img1 from "../../assets/hq720.webp";
+import img2 from "../../assets/portfolio.webp";
+import img3 from "../../assets/masterjs.jpg";
+import img4 from "../../assets/next js.jpg";
 
 export default function Home() {
   const jobs = [
@@ -95,6 +98,44 @@ export default function Home() {
     },
   ];
 
+  const cardData = [
+    {
+      title: "Learn React in One Video",
+      description:
+        "Master React with a single, beginner-friendly video by CodeWithHarry, a well-known YouTuber and programmer.",
+      image: img1,
+      link: "https://www.youtube.com/watch?v=your-video-link",
+    },
+    {
+      title: "Master JavaScript in 60 Minutes",
+      description:
+        "A fast-paced guide to essential JavaScript concepts, designed for both beginners and intermediate learners.",
+      image: img3,
+      link: "https://www.youtube.com/watch?v=your-video-link",
+    },
+    {
+      title: "Learn Next js",
+      description:
+        "Dive into the world of server-side rendering and static site generation with Next.js. Learn to build fast, SEO-friendly, and scalable web applications using real-world examples and hands-on projects.",
+      image: img4,
+      link: "https://www.youtube.com/watch?v=your-video-link",
+    },
+    {
+      title: "Build Your First Portfolio Website",
+      description:
+        "Step-by-step guide to build a modern and responsive developer portfolio using HTML, CSS, and JS.",
+      image: img2,
+      link: "https://www.youtube.com/watch?v=your-video-link",
+    },
+    {
+      title: "Understanding APIs with Node.js",
+      description:
+        "Learn how APIs work and build your own using Node.js and Express in this beginner-friendly tutorial.",
+      image: img1,
+      link: "https://www.youtube.com/watch?v=your-video-link",
+    },
+  ];
+
   return (
     <div>
       <Hero />
@@ -104,7 +145,7 @@ export default function Home() {
           Why TalentLink?
         </h2>
 
-        <div className="grid grid-cols-3 gap-14">
+        <div className="grid grid-cols-3 gap-10">
           {features.map((feature, index) => (
             <Card
               key={index}
@@ -202,27 +243,49 @@ export default function Home() {
       </section>
 
       <section className="py-12 lg:px-12 sm:px-8 x-sm:px-4 max-w-[1300px] mx-auto">
-        <h2 className="text-[#8928e2] sm:text-[3rem] x-sm:text-[2rem] font-[600] text-center mb-10">Available Resources</h2>
+        <h2 className="text-[#8928e2] sm:text-[3rem] x-sm:text-[2rem] font-[600] text-center mb-10">
+          Available Resources
+        </h2>
 
-        <div className="grid grid-cols-3">
-           <Card sx={{ maxWidth: 345 }} className="!bg-gradient-to-r from-[#b263fc] to-[#8928e2] hover:bg-gradient-to-l hover:from-[#8928e2] hover:to-[#b263fc] !rounded-xl">
-      <CardMedia
-        sx={{ height: 150 }}
-        image={img1}
-        title="green iguana"
-      />
-      <CardContent>
-        <Typography gutterBottom variant="h5" component="div" className="text-white">
-          Learn React in One video
-        </Typography>
-        <Typography variant="body2" sx={{ color: 'text.secondary' }} className="!text-white">
-          Master React with a single, beginner-friendly video by CodeWithHarry a well-known YouTuber and programmer who has helped millions of developers worldwide.
-        </Typography>
-      </CardContent>
-      <CardActions>
-        <Button className="!bg-white !text-[#8928e2]">Watch Now</Button>
-      </CardActions>
-    </Card>
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-10">
+          {cardData.map((card) => (
+            <Card
+              key={card.id}
+              sx={{ maxWidth: 345 }}
+              className="!rounded-xl border-2 border-[#8928e2] !shadow-md p-1"
+            >
+              <CardMedia
+                sx={{ height: 180, borderRadius: "8px" }}
+                image={card.image}
+                title={card.title}
+              />
+              <CardContent>
+                <Typography
+                  gutterBottom
+                  variant="h5"
+                  component="div"
+                  className="text-black"
+                >
+                  {card.title}
+                </Typography>
+                <Typography variant="body2" className="text-black">
+                  {card.description}
+                </Typography>
+              </CardContent>
+              <CardActions>
+                <Button className="!bg-[#8928e2] !text-white">Watch Now</Button>
+              </CardActions>
+            </Card>
+          ))}
+        </div>
+
+        <div className="w-full flex justify-center mt-8">
+          <Button
+            href="#"
+            className="!text-white !bg-[#8928e2] text-lg !px-6 !py-3 whitespace-nowrap"
+          >
+            See More
+          </Button>
         </div>
       </section>
     </div>

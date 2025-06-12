@@ -1,90 +1,103 @@
 import React, { useEffect } from 'react';
+import Card from "@mui/material/Card";
+import CardContent from "@mui/material/CardContent";
+import CardMedia from "@mui/material/CardMedia";
+import Typography from "@mui/material/Typography";
+import CardActionArea from "@mui/material/CardActionArea";
+import { TbWorldSearch } from "react-icons/tb";
+import { BsFileCode } from "react-icons/bs";
+import { VscVmConnect } from "react-icons/vsc";
+import { VscFeedback } from "react-icons/vsc";
+import { Button } from "@mui/material";
+import { MdLocationOn } from "react-icons/md";
+import { RiMoneyRupeeCircleLine } from "react-icons/ri";
+import { MdMailOutline } from "react-icons/md";
+import { MdOutlineDateRange } from "react-icons/md";
+import CardActions from "@mui/material/CardActions";
+import img1 from "../../assets/hq720.webp";
+import img2 from "../../assets/portfolio.webp";
+import img3 from "../../assets/masterjs.jpg";
+import img4 from "../../assets/next js.jpg";
 
 function Resources() {
-    // useEffect(() => {
-    //   document.body.style.overflow = 'hidden';
-    //   return () => {
-    //     document.body.style.overflow = 'auto'; // Restore on unmount
-    //   };
-    // }, []);
-  const resources = [
-    {
-      title: "Learn React in one video.",
-      desc: "Learn React in one video by a great YouTuber, CodeWithHarry, a lifesaver for millions.",
-      img: "https://img.youtube.com/vi/dGcsHMXbSOA/maxresdefault.jpg",
-      link: "#",
-    },
-    {
-      title: "NextJs 13 crash course.",
-      desc: "Learn Next.js by DevelopedByEd to master web development fundamentals and practices.",
-      img: "https://img.youtube.com/vi/nextjs-crash-course-image.jpg",
-      link: "#",
-    },
-    {
-      title: "Learn Three.js In One Video.",
-      desc: "Build and deploy your portfolio using Three.js with JavaScript Master tutorials.",
-      img: "https://img.youtube.com/vi/3d-portfolio-threejs.jpg",
-      link: "#",
-    },
-    {
-      title: "Python Programming for Beginners",
-      desc: "A beginner-friendly course by Programming with Mosh covering Python basics.",
-      img: "https://img.youtube.com/vi/breaking-bad-api.jpg",
-      link: "#",
-    },
-    {
-      title: "Learn HTML and CSS",
-      desc: "FreeCodeCamp.org offers this detailed introduction to HTML and CSS with projects.",
-      img: "https://img.youtube.com/vi/tkinter-course.jpg",
-      link: "#",
-    },
-    {
-      title: "JavaScript Crash Course",
-      desc: "Learn JavaScript fast with Traversy Media's guide for beginners to intermediate devs.",
-      img: "https://img.youtube.com/vi/mern-ecommerce.jpg",
-      link: "#",
-    },
-  ];
+  const cardData = [
+     {
+       title: "Learn React in One Video",
+       description:
+         "Master React with a single, beginner-friendly video by CodeWithHarry, a well-known YouTuber and programmer.",
+       image: img1,
+       link: "https://www.youtube.com/watch?v=your-video-link",
+     },
+     {
+       title: "Master JavaScript in 60 Minutes",
+       description:
+         "A fast-paced guide to essential JavaScript concepts, designed for both beginners and intermediate learners.",
+       image: img3,
+       link: "https://www.youtube.com/watch?v=your-video-link",
+     },
+     {
+       title: "Learn Next js",
+       description:
+         "Dive into the world of server-side rendering and static site generation with Next.js. Learn to build fast, SEO-friendly, and scalable web applications using real-world examples and hands-on projects.",
+       image: img4,
+       link: "https://www.youtube.com/watch?v=your-video-link",
+     },
+     {
+       title: "Build Your First Portfolio Website",
+       description:
+         "Step-by-step guide to build a modern and responsive developer portfolio using HTML, CSS, and JS.",
+       image: img2,
+       link: "https://www.youtube.com/watch?v=your-video-link",
+     },
+     {
+       title: "Understanding APIs with Node.js",
+       description:
+         "Learn how APIs work and build your own using Node.js and Express in this beginner-friendly tutorial.",
+       image: img1,
+       link: "https://www.youtube.com/watch?v=your-video-link",
+     },
+   ];
 
   return (
-    <div className="p-6 bg-gray-100 min-h-screen bg-gradient-to-r from-[#b263fc] to-[#8928e2] ">
-      <h1 className="text-4xl font-bold text-center text-gray-800 mb-2">
+    <div className="p-6 min-h-screen mt-25 mb-10">
+      <h1 className="text-4xl font-bold text-center text-[#8928e2] mb-2">
         Get Started
       </h1>
-      <p className="text-center text-white mb-10">
+      <p className="text-center text-[#8928e2] mb-10">
         We provide you the way to learn from the best resources out there!
       </p>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
-        {resources.map((resource, index) => (
-          <div
-            key={index}
-            className="bg-white rounded-lg shadow-lg overflow-hidden flex flex-col"
-          >
-            <img
-              src={resource.img}
-              alt={resource.title}
-              className="w-full h-48 object-cover"
-            />
-            <div className="p-4 flex flex-col flex-grow">
-              <h3 className="text-lg font-semibold mb-1">
-                {resource.title}
-              </h3>
-              <p className="text-sm text-gray-600 flex-grow">
-                {resource.desc}
-              </p>
-              <a
-                href={resource.link}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="mt-4 inline-block bg-[#8928e2] text-white text-center py-2 px-4 rounded hover:bg-blue-700 transition"
-              >
-                Watch Now!
-              </a>
-            </div>
-          </div>
-        ))}
-      </div>
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-10">
+          {cardData.map((card) => (
+            <Card
+              key={card.id}
+              sx={{ maxWidth: 345 }}
+              className="!rounded-xl border-2 border-[#8928e2] !shadow-md p-1"
+            >
+              <CardMedia
+                sx={{ height: 180, borderRadius: "8px" }}
+                image={card.image}
+                title={card.title}
+              />
+              <CardContent>
+                <Typography
+                  gutterBottom
+                  variant="h5"
+                  component="div"
+                  className="text-black"
+                >
+                  {card.title}
+                </Typography>
+                <Typography variant="body2" className="text-black">
+                  {card.description}
+                </Typography>
+              </CardContent>
+              <CardActions>
+                <Button className="!bg-[#8928e2] !text-white">Watch Now</Button>
+              </CardActions>
+            </Card>
+          ))}
+        </div>
     </div>
   );
 }

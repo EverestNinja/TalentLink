@@ -1,7 +1,8 @@
-import React, { useState } from "react";
-import { Card, Button, Typography } from "@material-tailwind/react";
-import { MdLocationOn, MdMailOutline, MdOutlineDateRange } from "react-icons/md";
-import { RiMoneyRupeeCircleLine } from "react-icons/ri";
+import React, { useState, useMemo } from "react";
+import { useAuth } from "../../contexts/AuthContext";
+import JobFilters from "./components/JobFilters";
+import JobsGrid from "./components/JobsGrid";
+import MentorsSection from "./components/MentorsSection";
 
 const jobsData = [
   {
@@ -60,149 +61,58 @@ const jobsData = [
   },
 ];
 
-const mentorsData = [
-  { name: "Alice Johnson", expertise: "Frontend Development", company: "Tech Solutions" },
-  { name: "Bob Smith", expertise: "Backend Engineering", company: "InnovateX" },
-  { name: "Carol Lee", expertise: "UI/UX Design", company: "Creative Minds" },
-];
-
-function Jobs() {
+const Jobs = React.memo(() => {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCompany, setSelectedCompany] = useState("");
   const [selectedLocation, setSelectedLocation] = useState("");
+  
+  // Auth context
+  const { isAuthenticated, loading: authLoading } = useAuth();
 
-  const companies = [...new Set(jobsData.map((job) => job.company))];
-  const locations = [...new Set(jobsData.map((job) => job.location))];
+  // Memoize expensive calculations
+  const companies = useMemo(() => [...new Set(jobsData.map((job) => job.company))], []);
+  const locations = useMemo(() => [...new Set(jobsData.map((job) => job.location))], []);
 
-  const filteredJobs = jobsData.filter(
-    (job) =>
-      job.title.toLowerCase().includes(searchTerm.toLowerCase()) &&
-      (selectedCompany === "" || job.company === selectedCompany) &&
-      (selectedLocation === "" || job.location === selectedLocation)
+  const filteredJobs = useMemo(() => 
+    jobsData.filter(
+      (job) =>
+        job.title.toLowerCase().includes(searchTerm.toLowerCase()) &&
+        (selectedCompany === "" || job.company === selectedCompany) &&
+        (selectedLocation === "" || job.location === selectedLocation)
+    ), [searchTerm, selectedCompany, selectedLocation]
   );
 
   return (
-    <div className="min-h-screen bg-gradient-to-r from-[#b263fc] to-[#8928e2] p-6">
+    <div className="min-h-screen  p-6 mt-25 mb-10">
       <div className="max-w-7xl mx-auto text-white">
-        <h1 className="text-4xl font-bold text-center mb-10">Explore Jobs & Mentors</h1>
+        <h1 className="text-4xl font-bold text-center mb-10 text-[#8928e2]">Explore Jobs & Mentors</h1>
 
         {/* Filters */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-10">
-          <input
-            type="text"
-            placeholder="Search job title..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            className="rounded-xl px-5 py-3 text-black placeholder-gray-500 shadow-md focus:outline-none"
-          />
-          <select
-            value={selectedCompany}
-            onChange={(e) => setSelectedCompany(e.target.value)}
-            className="rounded-xl px-5 py-3 text-black shadow-md focus:outline-none"
-          >
-            <option value="">All Companies</option>
-            {companies.map((company, i) => (
-              <option key={i} value={company}>
-                {company}
-              </option>
-            ))}
-          </select>
-          <select
-            value={selectedLocation}
-            onChange={(e) => setSelectedLocation(e.target.value)}
-            className="rounded-xl px-5 py-3 text-black shadow-md focus:outline-none"
-          >
-            <option value="">All Locations</option>
-            {locations.map((location, i) => (
-              <option key={i} value={location}>
-                {location}
-              </option>
-            ))}
-          </select>
-        </div>
+        <JobFilters
+          searchTerm={searchTerm}
+          onSearchChange={setSearchTerm}
+          selectedCompany={selectedCompany}
+          onCompanyChange={setSelectedCompany}
+          selectedLocation={selectedLocation}
+          onLocationChange={setSelectedLocation}
+          companies={companies}
+          locations={locations}
+        />
 
         {/* Content Sections */}
         <div className="grid grid-cols-1 lg:grid-cols-[2fr_1fr] gap-10">
           {/* Jobs Section */}
-          <div>
-            <h2 className="text-2xl font-semibold mb-6">Latest Jobs</h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {filteredJobs.length > 0 ? (
-                filteredJobs.map((job) => (
-                  <Card
-                    key={job.id}
-                    className="border-1 border-[#8928e2] !rounded-xl p-4 cursor-pointer bg-white max-w-[800px] w-full !transition-transform duration-300 hover:scale-105"
-                  >
-                    <div className="flex !flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-                      <div className="w-full">
-                        <Typography
-                          variant="h5"
-                          component="h3"
-                          className="text-[1.6rem] sm:text-[2rem] font-semibold text-[#8928e2]"
-                        >
-                          {job.title}
-                        </Typography>
-
-                        <div className="font-semibold flex gap-2 items-center mt-2 text-gray-800">
-                          <RiMoneyRupeeCircleLine />
-                          <span className="text-[14px]">{job.salary}</span>
-                        </div>
-
-                        <div className="text-gray-700 flex flex-wrap gap-6 mt-2 text-sm">
-                          <div className="flex gap-2 items-center">
-                            <MdLocationOn />
-                            <span>{job.location}</span>
-                          </div>
-                          <div className="flex gap-2 items-center">
-                            <MdMailOutline />
-                            <span>{job.type}</span>
-                          </div>
-                          <div className="flex gap-2 items-center">
-                            <MdOutlineDateRange />
-                            <span>{job.date}</span>
-                          </div>
-                        </div>
-                      </div>
-                      <div className="w-full flex justify-start mt-2">
-                        <Button
-                          href="#"
-                          className="!bg-[#8928e2] !text-white text-lg px-6 py-3 rounded whitespace-nowrap"
-                        >
-                          Apply Now
-                        </Button>
-                      </div>
-                    </div>
-                  </Card>
-                ))
-              ) : (
-                <p className="text-white text-center col-span-full">No jobs found matching your criteria.</p>
-              )}
-            </div>
-          </div>
+          <JobsGrid jobs={filteredJobs} />
 
           {/* Mentors Section */}
-          <div>
-            <h2 className="text-2xl font-semibold mb-6">Top Mentors</h2>
-            <div className="space-y-5">
-              {mentorsData.map((mentor, idx) => (
-                <div
-                  key={idx}
-                  className="bg-white/10 backdrop-blur-md border border-white/20 rounded-xl p-5 hover:scale-[1.02] transition"
-                >
-                  <h3 className="text-lg font-semibold text-white">{mentor.name}</h3>
-                  <p className="text-sm text-gray-100">Expertise: {mentor.expertise}</p>
-                  <p className="text-sm text-gray-200 mb-3">Company: {mentor.company}</p>
-                  <button className="bg-green-400 text-white text-sm px-3 py-1.5 rounded-full hover:bg-green-500 transition">
-                    Connect
-                  </button>
-                </div>
-              ))}
-            </div>
-          </div>
+          <MentorsSection 
+            isAuthenticated={isAuthenticated}
+            authLoading={authLoading}
+          />
         </div>
       </div>
     </div>
   );
-}
+});
 
 export default Jobs;
