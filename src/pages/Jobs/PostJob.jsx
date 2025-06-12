@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useAuth } from "../../contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
-import { createJobPosting, getJobsByOrganization, deleteJobPosting } from "../../firebase/jobService";
+import { createJobPosting, getJobsByOrganization, deleteJobPosting, updateJobPosting } from "../../firebase/jobService";
 
 const PostJob = () => {
   const { user, userData, isAuthenticated, loading } = useAuth();
@@ -25,7 +25,12 @@ const PostJob = () => {
   const [submitMessage, setSubmitMessage] = useState("");
   const [myJobs, setMyJobs] = useState([]);
   const [jobsLoading, setJobsLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState("post"); // "post" or "manage"
+  const [activeTab, setActiveTab] = useState("post");
+  
+  // Edit job states
+  const [editingJob, setEditingJob] = useState(null);
+  const [isEditing, setIsEditing] = useState(false);
+  const [editFormData, setEditFormData] = useState({});
 
   // Load organization's jobs
   useEffect(() => {
@@ -70,6 +75,14 @@ const PostJob = () => {
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData(prev => ({
+      ...prev,
+      [name]: value
+    }));
+  };
+
+  const handleEditChange = (e) => {
+    const { name, value } = e.target;
+    setEditFormData(prev => ({
       ...prev,
       [name]: value
     }));
@@ -126,17 +139,79 @@ const PostJob = () => {
     }
   };
 
+  const handleEditJob = (job) => {
+    setEditingJob(job);
+    setEditFormData({
+      title: job.title,
+      company: job.company,
+      description: job.description,
+      requirements: job.requirements,
+      salary: job.salary || "",
+      location: job.location,
+      type: job.type,
+      workMode: job.workMode,
+      applicationEmail: job.applicationEmail,
+      applicationUrl: job.applicationUrl || "",
+      deadline: job.deadline || "",
+    });
+    setIsEditing(true);
+  };
+
+  const handleUpdateJob = async (e) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+    setSubmitMessage("");
+
+    try {
+      const result = await updateJobPosting(editingJob.id, editFormData, user.uid);
+      
+      if (result.success) {
+        setSubmitMessage("Job updated successfully! ✅");
+        setIsEditing(false);
+        setEditingJob(null);
+        await loadMyJobs();
+        setTimeout(() => setSubmitMessage(""), 3000);
+      } else {
+        setSubmitMessage("Error updating job. Please try again.");
+      }
+    } catch (error) {
+      console.error('Error updating job:', error);
+      setSubmitMessage("Error updating job: " + error.message);
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
   const handleDeleteJob = async (jobId) => {
     if (window.confirm('Are you sure you want to delete this job posting?')) {
       try {
         await deleteJobPosting(jobId, user.uid);
-        setSubmitMessage("Job deleted successfully!");
+        setSubmitMessage("Job deleted successfully! 🗑️");
         await loadMyJobs();
         setTimeout(() => setSubmitMessage(""), 3000);
       } catch (error) {
         console.error('Error deleting job:', error);
         setSubmitMessage("Error deleting job: " + error.message);
       }
+    }
+  };
+
+  const handleCancelEdit = () => {
+    setIsEditing(false);
+    setEditingJob(null);
+    setEditFormData({});
+  };
+
+  const toggleJobStatus = async (job) => {
+    try {
+      const updatedData = { isActive: !job.isActive };
+      await updateJobPosting(job.id, updatedData, user.uid);
+      setSubmitMessage(`Job ${updatedData.isActive ? 'activated' : 'deactivated'} successfully! 🔄`);
+      await loadMyJobs();
+      setTimeout(() => setSubmitMessage(""), 3000);
+    } catch (error) {
+      console.error('Error toggling job status:', error);
+      setSubmitMessage("Error updating job status: " + error.message);
     }
   };
 
@@ -149,7 +224,7 @@ const PostJob = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-r from-[#b263fc] to-[#8928e2] py-8 px-4">
+    <div className="min-h-screen bg-gradient-to-r from-[#b263fc] to-[#8928e2] py-8 px-4 mt-20">
       <div className="max-w-6xl mx-auto">
         {/* Header */}
         <div className="text-center mb-8">
@@ -413,9 +488,230 @@ const PostJob = () => {
             <div className="mb-8">
               <h2 className="text-2xl font-bold text-gray-800 mb-2">Your Job Postings</h2>
               <p className="text-gray-600">
-                Manage your posted jobs, view applications, and track performance.
+                Create, Read, Update, and Delete your job postings. Full CRUD operations available.
               </p>
             </div>
+
+            {/* Edit Job Modal */}
+            {isEditing && (
+              <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+                <div className="bg-white rounded-xl shadow-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto">
+                  <div className="sticky top-0 bg-white border-b px-6 py-4">
+                    <div className="flex justify-between items-center">
+                      <h3 className="text-xl font-bold text-gray-800">Edit Job: {editingJob?.title}</h3>
+                      <button
+                        onClick={handleCancelEdit}
+                        className="text-gray-400 hover:text-gray-600"
+                      >
+                        <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12"></path>
+                        </svg>
+                      </button>
+                    </div>
+                  </div>
+
+                  <form onSubmit={handleUpdateJob} className="p-6 space-y-6">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      {/* Job Title */}
+                      <div className="md:col-span-2">
+                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                          Job Title *
+                        </label>
+                        <input
+                          type="text"
+                          name="title"
+                          value={editFormData.title || ""}
+                          onChange={handleEditChange}
+                          required
+                          className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                        />
+                      </div>
+
+                      {/* Company */}
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                          Company *
+                        </label>
+                        <input
+                          type="text"
+                          name="company"
+                          value={editFormData.company || ""}
+                          onChange={handleEditChange}
+                          required
+                          className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                        />
+                      </div>
+
+                      {/* Location */}
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                          Location *
+                        </label>
+                        <input
+                          type="text"
+                          name="location"
+                          value={editFormData.location || ""}
+                          onChange={handleEditChange}
+                          required
+                          className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                        />
+                      </div>
+
+                      {/* Job Type */}
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                          Job Type *
+                        </label>
+                        <select
+                          name="type"
+                          value={editFormData.type || ""}
+                          onChange={handleEditChange}
+                          required
+                          className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                        >
+                          <option value="Full-time">Full-time</option>
+                          <option value="Part-time">Part-time</option>
+                          <option value="Contract">Contract</option>
+                          <option value="Internship">Internship</option>
+                          <option value="Freelance">Freelance</option>
+                        </select>
+                      </div>
+
+                      {/* Work Mode */}
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                          Work Mode *
+                        </label>
+                        <select
+                          name="workMode"
+                          value={editFormData.workMode || ""}
+                          onChange={handleEditChange}
+                          required
+                          className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                        >
+                          <option value="On-site">On-site</option>
+                          <option value="Remote">Remote</option>
+                          <option value="Hybrid">Hybrid</option>
+                        </select>
+                      </div>
+
+                      {/* Salary */}
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                          Salary Range
+                        </label>
+                        <input
+                          type="text"
+                          name="salary"
+                          value={editFormData.salary || ""}
+                          onChange={handleEditChange}
+                          className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                        />
+                      </div>
+
+                      {/* Deadline */}
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                          Application Deadline
+                        </label>
+                        <input
+                          type="date"
+                          name="deadline"
+                          value={editFormData.deadline || ""}
+                          onChange={handleEditChange}
+                          className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                        />
+                      </div>
+                    </div>
+
+                    {/* Description */}
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        Job Description *
+                      </label>
+                      <textarea
+                        name="description"
+                        value={editFormData.description || ""}
+                        onChange={handleEditChange}
+                        required
+                        rows={6}
+                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                      />
+                    </div>
+
+                    {/* Requirements */}
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        Requirements *
+                      </label>
+                      <textarea
+                        name="requirements"
+                        value={editFormData.requirements || ""}
+                        onChange={handleEditChange}
+                        required
+                        rows={4}
+                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                      />
+                    </div>
+
+                    {/* Application Details */}
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                          Application Email *
+                        </label>
+                        <input
+                          type="email"
+                          name="applicationEmail"
+                          value={editFormData.applicationEmail || ""}
+                          onChange={handleEditChange}
+                          required
+                          className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                        />
+                      </div>
+
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                          Application URL
+                        </label>
+                        <input
+                          type="url"
+                          name="applicationUrl"
+                          value={editFormData.applicationUrl || ""}
+                          onChange={handleEditChange}
+                          className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                        />
+                      </div>
+                    </div>
+
+                    {/* Form Actions */}
+                    <div className="flex gap-4 pt-6 border-t">
+                      <button
+                        type="button"
+                        onClick={handleCancelEdit}
+                        className="flex-1 px-6 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition font-medium"
+                      >
+                        Cancel
+                      </button>
+                      <button
+                        type="submit"
+                        disabled={isSubmitting}
+                        className="flex-1 bg-gradient-to-r from-[#8928e2] to-[#b263fc] text-white py-3 px-6 rounded-lg hover:from-[#7a1fd8] hover:to-[#a133d7] transition font-medium disabled:opacity-50"
+                      >
+                        {isSubmitting ? (
+                          <div className="flex items-center justify-center">
+                            <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-2"></div>
+                            Updating...
+                          </div>
+                        ) : (
+                          'Update Job'
+                        )}
+                      </button>
+                    </div>
+                  </form>
+                </div>
+              </div>
+            )}
 
             {jobsLoading ? (
               <div className="text-center py-8">
@@ -441,13 +737,16 @@ const PostJob = () => {
                 {myJobs.map((job) => (
                   <div key={job.id} className="border border-gray-200 rounded-lg p-6 hover:shadow-md transition-shadow">
                     <div className="flex justify-between items-start mb-4">
-                      <div>
+                      <div className="flex-1">
                         <h3 className="text-lg font-semibold text-gray-900 mb-1">{job.title}</h3>
                         <p className="text-gray-600">{job.company} • {job.location}</p>
                         <div className="flex items-center space-x-4 mt-2 text-sm text-gray-500">
                           <span>{job.type}</span>
                           <span>{job.workMode}</span>
                           <span>Posted {new Date(job.createdAt).toLocaleDateString()}</span>
+                          {job.updatedAt !== job.createdAt && (
+                            <span>Updated {new Date(job.updatedAt).toLocaleDateString()}</span>
+                          )}
                         </div>
                       </div>
                       <div className="flex items-center space-x-2">
@@ -458,15 +757,52 @@ const PostJob = () => {
                         }`}>
                           {job.isActive ? 'Active' : 'Inactive'}
                         </span>
-                        <button
-                          onClick={() => handleDeleteJob(job.id)}
-                          className="text-red-600 hover:text-red-800 p-1"
-                          title="Delete job"
-                        >
-                          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
-                          </svg>
-                        </button>
+                        
+                        {/* Action Buttons */}
+                        <div className="flex items-center space-x-1">
+                          {/* Toggle Status */}
+                          <button
+                            onClick={() => toggleJobStatus(job)}
+                            className={`p-2 rounded-lg transition-colors ${
+                              job.isActive 
+                                ? 'text-orange-600 hover:bg-orange-50' 
+                                : 'text-green-600 hover:bg-green-50'
+                            }`}
+                            title={job.isActive ? 'Deactivate job' : 'Activate job'}
+                          >
+                            {job.isActive ? (
+                              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728L5.636 5.636m12.728 12.728L18.364 5.636M5.636 18.364l12.728-12.728"></path>
+                              </svg>
+                            ) : (
+                              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path>
+                              </svg>
+                            )}
+                          </button>
+
+                          {/* Edit Button */}
+                          <button
+                            onClick={() => handleEditJob(job)}
+                            className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
+                            title="Edit job"
+                          >
+                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+                            </svg>
+                          </button>
+
+                          {/* Delete Button */}
+                          <button
+                            onClick={() => handleDeleteJob(job.id)}
+                            className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                            title="Delete job"
+                          >
+                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                            </svg>
+                          </button>
+                        </div>
                       </div>
                     </div>
                     
