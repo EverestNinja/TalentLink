@@ -89,7 +89,7 @@ export default function RoleBasedLoginPage() {
 
   const handleLoginSuccess = (result) => {
     setSuccess(result.message);
-    
+
     // Reset form
     setFormData({
       email: "",
@@ -97,8 +97,12 @@ export default function RoleBasedLoginPage() {
     });
 
     // Determine redirect path based on whether this is a new user or login
-    const redirectPath = getRedirectPath(result.userData.role, result.userData, result.isNewUser);
-    
+    const redirectPath = getRedirectPath(
+      result.userData.role,
+      result.userData,
+      result.isNewUser
+    );
+
     // Navigate after successful login/signup
     setTimeout(() => {
       navigate(redirectPath);
@@ -111,7 +115,11 @@ export default function RoleBasedLoginPage() {
     setError("");
 
     try {
-      const result = await loginWithEmail(formData.email, formData.password, selectedRole);
+      const result = await loginWithEmail(
+        formData.email,
+        formData.password,
+        selectedRole
+      );
       handleLoginSuccess(result);
     } catch (error) {
       setError(error.message);
@@ -148,20 +156,18 @@ export default function RoleBasedLoginPage() {
   return (
     <Box
       sx={{
-        position: "relative",
         minHeight: "100vh",
-        background: "linear-gradient(to right, #b263fc, #8928e2)",
+        // background: "linear-gradient(to right, #b263fc, #8928e2)",
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
         justifyContent: "center",
-        overflow: "hidden",
-        px: 2,
-        py: 6,
+        // overflow: "hidden",
+        marginBottom: "-100px",
       }}
     >
       {/* Dynamic Background Image */}
-      <Box
+      {/* <Box
         component="img"
         src={getBackgroundImage()}
         alt="Background Illustration"
@@ -179,33 +185,42 @@ export default function RoleBasedLoginPage() {
           maxWidth: "100vw",
           maxHeight: "100vh",
         }}
-      />
+      /> */}
 
-      {/* Header */}
-      <Typography
-        variant="h3"
-        gutterBottom
+      <Box
         sx={{
-          position: "absolute",
-          marginTop: 1,
-          left: "50%",
-          transform: "translateX(-50%)",
-          fontWeight: "bold",
-          color: "white",
-          textAlign: "center",
-          zIndex: 2,
+          mt: { xs: 10, md: 10 },
+          zIndex: 1,
+          width: "100%",
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
         }}
       >
-        Welcome to TalentLink
-      </Typography>
-
-      <Box sx={{ mt: { xs: 10, md: 15 }, zIndex: 1, width: "100%", display: "flex", flexDirection: "column", alignItems: "center" }}>
-        
         {!showForm ? (
           <>
+            {/* Header */}
+            <Typography
+              variant="h3"
+              gutterBottom
+              sx={{
+                // marginTop: ,
+                // left: "50%",
+                // transform: "translateX(-50%)",
+                fontWeight: "bold",
+                color: "#8929e2",
+                textAlign: "center",
+                // zIndex: 2,
+                marginTop: "50px",
+        
+              }}
+            >
+              Welcome to TalentLink
+            </Typography>
+
             <Typography
               variant="body1"
-              sx={{ color: "#f5f5f5", mb: 4, textAlign: "center", zIndex: 1 }}
+              sx={{ color: "#8929e2", mb: 4, textAlign: "center", zIndex: 1 }}
             >
               Choose your role to get started
             </Typography>
@@ -240,6 +255,7 @@ export default function RoleBasedLoginPage() {
                     borderRadius: 3,
                     color: "white",
                   }}
+                  className="mt-0"
                 >
                   <Box
                     sx={{
@@ -255,7 +271,10 @@ export default function RoleBasedLoginPage() {
                   <Typography variant="h6" gutterBottom sx={{ color: "white" }}>
                     Login as {label}
                   </Typography>
-                  <Typography variant="body2" sx={{ color: "rgba(255,255,255,0.8)" }}>
+                  <Typography
+                    variant="body2"
+                    sx={{ color: "rgba(255,255,255,0.8)" }}
+                  >
                     {description}
                   </Typography>
                 </Card>
@@ -272,17 +291,19 @@ export default function RoleBasedLoginPage() {
               background: "rgba(255,255,255,0.95)",
               borderRadius: 3,
               zIndex: 1,
+              marginTop: "60px",
+              // marginBottom: "110px",
             }}
           >
             <Box sx={{ display: "flex", alignItems: "center", mb: 3 }}>
               <Button
                 onClick={handleBackToRoles}
-                sx={{ mr: 2, minWidth: "auto", p: 1 }}
+                sx={{ mr: 2, minWidth: "auto", p: 1 , color: "#8F2BDF"}}
               >
                 ← Back
               </Button>
               <Typography variant="h5" sx={{ fontWeight: "bold" }}>
-                Login as {roles.find(r => r.role === selectedRole)?.label}
+                Login as {roles.find((r) => r.role === selectedRole)?.label}
               </Typography>
             </Box>
 
@@ -307,16 +328,17 @@ export default function RoleBasedLoginPage() {
               sx={{
                 mb: 3,
                 py: 1.5,
-                borderColor: "#db4437",
-                color: "#db4437",
-                "&:hover": {
-                  borderColor: "#c23321",
-                  backgroundColor: "rgba(219, 68, 55, 0.04)",
-                },
+                borderColor: "#8F2BDF",
+                color: "#8F2BDF",
+               
               }}
               startIcon={<GoogleIcon />}
             >
-              {loading ? <CircularProgress size={20} /> : "Continue with Google"}
+              {loading ? (
+                <CircularProgress size={20} />
+              ) : (
+                "Continue with Google"
+              )}
             </Button>
 
             <Divider sx={{ mb: 3 }}>
@@ -376,7 +398,11 @@ export default function RoleBasedLoginPage() {
                   },
                 }}
               >
-                {loading ? <CircularProgress size={20} color="inherit" /> : "Login"}
+                {loading ? (
+                  <CircularProgress size={20} color="inherit" />
+                ) : (
+                  "Login"
+                )}
               </Button>
             </Box>
           </Card>
@@ -384,10 +410,14 @@ export default function RoleBasedLoginPage() {
 
         <Typography
           variant="body1"
-          sx={{ color: "#fff", mt: 3, zIndex: 1, textAlign: "center" }}
+          sx={{ color: "#8E2ADF", mt: 3, zIndex: 1, textAlign: "center", marginBottom: "100px" }}
+          className="!mb-[150px]"
         >
           New here?{" "}
-          <a href="/signup" style={{ color: "#fff", textDecoration: "underline" }}>
+          <a
+            href="/signup"
+            style={{ color: "#8E2ADF", textDecoration: "underline" }}
+          >
             Sign up instead
           </a>
         </Typography>
