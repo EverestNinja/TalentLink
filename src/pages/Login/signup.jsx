@@ -97,7 +97,7 @@ export default function SignupPage() {
 
   const handleSignupSuccess = (result) => {
     setSuccess(result.message);
-    
+
     // Reset form
     setFormData({
       firstName: "",
@@ -108,8 +108,12 @@ export default function SignupPage() {
     });
 
     // Determine redirect path based on whether this is a new user or login
-    const redirectPath = getRedirectPath(result.userData.role, result.userData, result.isNewUser);
-    
+    const redirectPath = getRedirectPath(
+      result.userData.role,
+      result.userData,
+      result.isNewUser
+    );
+
     // Navigate after successful signup
     setTimeout(() => {
       navigate(redirectPath);
@@ -164,20 +168,20 @@ export default function SignupPage() {
       sx={{
         position: "relative",
         minHeight: "100vh",
-        background: "linear-gradient(to right, #b263fc, #8928e2)",
+        // background: "linear-gradient(to right, #b263fc, #8928e2)",
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
         justifyContent: "center",
-        overflow: "hidden",
-        px: 2,
-        py: 6,
+        // overflow: "hidden",
+        marginTop: "-30px",
+        marginBottom: "-35px",
       }}
     >
       {/* Dynamic Background Image */}
       <Box
-        component="img"
-        src={getBackgroundImage()}
+        // component="img"
+        // src={getBackgroundImage()}
         alt="Background Illustration"
         sx={{
           position: "absolute",
@@ -195,31 +199,40 @@ export default function SignupPage() {
         }}
       />
 
-      {/* Header */}
-      <Typography
-        variant="h3"
-        gutterBottom
+      <Box
         sx={{
-          position: "absolute",
-          top: 20,
-          left: "50%",
-          transform: "translateX(-50%)",
-          fontWeight: "bold",
-          color: "white",
-          textAlign: "center",
-          zIndex: 2,
+          zIndex: 1,
+          width: "100%",
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          marginTop: "15px",
         }}
       >
-        Join TalentLink
-      </Typography>
-
-      <Box sx={{ mt: { xs: 10, md: 15 }, zIndex: 1, width: "100%", display: "flex", flexDirection: "column", alignItems: "center" }}>
-        
         {!showForm ? (
           <>
+            {/* Header */}
+            <Typography
+              variant="h3"
+              gutterBottom
+              sx={{
+                position: "absolute",
+                top: 20,
+                left: "50%",
+                transform: "translateX(-50%)",
+                fontWeight: "bold",
+                color: "#8f2bdf",
+                textAlign: "center",
+                zIndex: 2,
+                marginTop: "140px",
+              }}
+            >
+              Join TalentLink
+            </Typography>
+
             <Typography
               variant="body1"
-              sx={{ color: "#f5f5f5", mb: 4, textAlign: "center", zIndex: 1 }}
+              sx={{ color: "#8f2bdf", mb: 4, textAlign: "center", zIndex: 1, marginTop: "200px" }}
             >
               Choose your role to get started
             </Typography>
@@ -246,10 +259,10 @@ export default function SignupPage() {
                     p: 3,
                     cursor: "pointer",
                     transition: "all 0.3s ease",
-                    "&:hover": {
-                      boxShadow: 6,
-                      transform: "translateY(-4px)",
-                    },
+                    // "&:hover": {
+                    //   boxShadow: 6,
+                    //   transform: "translateY(-4px)",
+                    // },
                     background: "linear-gradient(to right, #8928e2, #a133d7)",
                     borderRadius: 3,
                     color: "white",
@@ -261,7 +274,7 @@ export default function SignupPage() {
                       display: "flex",
                       alignItems: "center",
                       justifyContent: "center",
-                      color: "white",
+                      color: "#8f2bdf",
                     }}
                   >
                     {icon}
@@ -269,7 +282,10 @@ export default function SignupPage() {
                   <Typography variant="h6" gutterBottom sx={{ color: "white" }}>
                     Sign up as {label}
                   </Typography>
-                  <Typography variant="body2" sx={{ color: "rgba(255,255,255,0.8)" }}>
+                  <Typography
+                    variant="body2"
+                    sx={{ color: "rgba(255,255,255,0.8)" }}
+                  >
                     {description}
                   </Typography>
                 </Card>
@@ -286,17 +302,18 @@ export default function SignupPage() {
               background: "rgba(255,255,255,0.95)",
               borderRadius: 3,
               zIndex: 1,
+              marginTop: "150px",
             }}
           >
             <Box sx={{ display: "flex", alignItems: "center", mb: 3 }}>
               <Button
                 onClick={handleBackToRoles}
-                sx={{ mr: 2, minWidth: "auto", p: 1 }}
+                sx={{ mr: 2, minWidth: "auto", p: 1, color: "#8f2bdf"}}
               >
                 ← Back
               </Button>
               <Typography variant="h5" sx={{ fontWeight: "bold" }}>
-                Sign up as {roles.find(r => r.role === selectedRole)?.label}
+                Sign up as {roles.find((r) => r.role === selectedRole)?.label}
               </Typography>
             </Box>
 
@@ -321,16 +338,16 @@ export default function SignupPage() {
               sx={{
                 mb: 3,
                 py: 1.5,
-                borderColor: "#db4437",
-                color: "#db4437",
-                "&:hover": {
-                  borderColor: "#c23321",
-                  backgroundColor: "rgba(219, 68, 55, 0.04)",
-                },
+                borderColor: "#8f2bdf",
+                color: "#8f2bdf",
               }}
               startIcon={<GoogleIcon />}
             >
-              {loading ? <CircularProgress size={20} /> : "Continue with Google"}
+              {loading ? (
+                <CircularProgress size={20} />
+              ) : (
+                "Continue with Google"
+              )}
             </Button>
 
             <Divider sx={{ mb: 3 }}>
@@ -412,10 +429,16 @@ export default function SignupPage() {
                   endAdornment: (
                     <InputAdornment position="end">
                       <IconButton
-                        onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                        onClick={() =>
+                          setShowConfirmPassword(!showConfirmPassword)
+                        }
                         edge="end"
                       >
-                        {showConfirmPassword ? <VisibilityOff /> : <Visibility />}
+                        {showConfirmPassword ? (
+                          <VisibilityOff />
+                        ) : (
+                          <Visibility />
+                        )}
                       </IconButton>
                     </InputAdornment>
                   ),
@@ -435,7 +458,11 @@ export default function SignupPage() {
                   },
                 }}
               >
-                {loading ? <CircularProgress size={20} color="inherit" /> : "Create Account"}
+                {loading ? (
+                  <CircularProgress size={20} color="inherit" />
+                ) : (
+                  "Create Account"
+                )}
               </Button>
             </Box>
           </Card>
@@ -443,14 +470,23 @@ export default function SignupPage() {
 
         <Typography
           variant="body1"
-          sx={{ color: "#fff", mt: 3, zIndex: 1, textAlign: "center" }}
+          sx={{
+            color: "#8f2bdf",
+            mt: 3,
+            zIndex: 1,
+            textAlign: "center",
+            marginBottom: "100px",
+          }}
         >
           Already have an account?{" "}
-          <a href="/login" style={{ color: "#fff", textDecoration: "underline" }}>
+          <a
+            href="/login"
+            style={{ color: "#8f2bdf", textDecoration: "underline" }}
+          >
             Login instead
           </a>
         </Typography>
       </Box>
     </Box>
   );
-} 
+}
