@@ -68,12 +68,22 @@ const userPlans = [
 
 const UserPlans = () => {
   return (
-    <Box sx={{ backgroundColor: 'grey.100', py: 8  , my: 4 }}>
+    <>
+        <section
+  className="lg:px-12 sm:px-8 x-sm:px-4 py-28 flex justify-center items-center bg-gradient-to-r from-[#b263fc] to-[#8929e2] pb-12"
+>
+  <h1
+    className="md:text-[5rem] sm:text-[6rem] x-sm:text-[3rem] font-bold text-white text-center leading-22"
+  >
+    Start Free, Upgrade <br /> as  You Grow
+  </h1>
+</section>
+    <Box sx={{ backgroundColor: '',pt: 8, mt: 1  , mb: 12 }}>
       <Container maxWidth="lg">
         <Typography variant="h3" align="center" fontWeight="bold" gutterBottom>
           Flexible Plans for Everyone
         </Typography>
-        <Typography variant="h6" align="center" color="text.secondary" sx={{ mb: 6 }}>
+        <Typography variant="h6" align="center" className="text-[12px]" color="text.secondary" sx={{ mb: 6 }}>
           Choose the plan that's right for you. Unlock your potential with TalentLink.
         </Typography>
 
@@ -169,6 +179,7 @@ const UserPlans = () => {
         </Grid>
       </Container>
     </Box>
+    </>
   );
 };
 

@@ -693,7 +693,6 @@ function EnhancedPostCard({ post, onComment, currentUser }) {
             ))}
           </Box>
         )}
-      </Box>
     </Paper>
   );
 }
