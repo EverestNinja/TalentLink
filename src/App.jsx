@@ -17,6 +17,8 @@ import Login from './pages/Login/Login';
 import SignupPage from './pages/Login/signup';
 import ProfileComplete from './pages/Profile/ProfileComplete';
 import ProfileView from './pages/Profile/ProfileView';
+import ChoosePlan from './pages/Pricing/Pricing';
+
 
 function App() {
   useEffect(() => {
@@ -49,6 +51,7 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<SignupPage />} />
           <Route path="/profile/complete" element={<ProfileComplete />} />
+          <Route path="/pricing" element={<ChoosePlan />} />
           <Route path="/profile" element={<ProfileView />} />
         </Routes>
         <Footer />

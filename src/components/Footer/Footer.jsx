@@ -1,5 +1,5 @@
 import React from "react";
-import logo from '../../assets/logo.png'
+import logo from "../../assets/logo.png";
 import { FaFacebookF } from "react-icons/fa";
 import { FaInstagram } from "react-icons/fa";
 
@@ -13,7 +13,7 @@ function Footer() {
               <img src={logo} className="h-20 me-3" alt="FlowBite Logo" />
             </a>
           </div>
-          
+
           <div className="grid grid-cols-2 gap-8 sm:gap-6 sm:grid-cols-2">
             <div>
               <h2 className="mb-6 text-sm font-semibold  uppercase text-white">
@@ -59,7 +59,7 @@ function Footer() {
                     rel="noopener noreferrer"
                     className="bg-[#8928E2] shadow-md p-3 rounded-full flex items-center justify-center"
                   >
-                    <FaFacebookF className="text-white text-xl"/>
+                    <FaFacebookF className="text-white text-xl" />
                   </a>
                 </li>
                 <li className="mb-4">
@@ -69,7 +69,7 @@ function Footer() {
                     rel="noopener noreferrer"
                     className="bg-[#8928E2] shadow-md p-3 rounded-full flex items-center justify-center"
                   >
-                    <FaInstagram className="text-white text-xl"/>
+                    <FaInstagram className="text-white text-xl" />
                   </a>
                 </li>
               </ul>
@@ -77,12 +77,32 @@ function Footer() {
           </div>
 
           <div className="">
-            <h2 class="text-center text-[2rem] font-[700] text-white">Subscribe To Our Mailing List!</h2>
-            <h4 class="text-center text-[.8rem] mb-8 text-white">Never miss any blog post, get notified whenever we posts something.</h4>
-            <form class="flex justify-center items-center bg-white p-2 rounded-[10px] w-full max-w-[600px]"><input class="bg-transparent w-full outline-none text-sm pl-2 max-w-[600px]" type="email" placeholder="Enter your email address." /><button type="submit" class="bg-[#8928E2] text-white py-2 px-8 text-sm rounded">Subscribe</button></form>
+            <h2 className="text-center text-[2rem] font-[700] text-white">
+              Subscribe To Our Mailing List!
+            </h2>
+            <h4 className="text-center text-[.8rem] mb-8 text-white">
+              Never miss any blog post, get notified whenever we posts
+              something.
+            </h4>
+            <form className="flex justify-center items-center bg-white p-2 rounded-[10px] w-full max-w-[600px]">
+              <input
+                className="bg-transparent w-full outline-none text-sm pl-2 max-w-[600px]"
+                type="email"
+                placeholder="Enter your email address."
+              />
+              <button
+                type="submit"
+                className="bg-[#8928E2] text-white py-2 px-8 text-sm rounded"
+              >
+                Subscribe
+              </button>
+            </form>
           </div>
         </div>
-        <hr className="my-6 border-gray-200 sm:mx-auto dark:border-gray-700 lg:my-8" style={{border: "1px solid white,"}}/>
+        <hr
+          className="my-6 border-gray-200 sm:mx-auto dark:border-gray-700 lg:my-8"
+          style={{ border: "1px solid white," }}
+        />
         <div className="sm:flex sm:items-center sm:justify-between">
           <span className="text-sm text-gray-200 sm:text-center dark:text-gray-200">
             © 2025
