@@ -1,15 +1,9 @@
 import React, { useEffect } from "react";
 
 function Contact() {
-  useEffect(() => {
-    document.body.style.overflow = "hidden";
-    return () => {
-      document.body.style.overflow = "auto";
-    };
-  }, []);
 
   return (
-    <div className="relative h-screen w-screen overflow-hidden">
+    <div className="relative h-screen w-screen overflow-hidden mt-20">
       {/* Background layers */}
       <div className="absolute inset-0 z-0">
         {/* Gradient background */}

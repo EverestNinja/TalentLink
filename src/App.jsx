@@ -3,6 +3,7 @@ import { useEffect } from 'react';
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { AuthProvider } from './contexts/AuthContext';
 import Navbar from './components/Navbar/Navbar';
+import Footer from './components/Footer/Footer';
 import Home from './pages/Home/Home';
 import Feed from './pages/Feed/Feed';
 import Resources from './pages/Resources/Resources';
@@ -44,7 +45,7 @@ function App() {
           <Route path="/profile/complete" element={<ProfileComplete />} />
           <Route path="/profile" element={<ProfileView />} />
         </Routes>
-        {/* <Footer /> */}
+        <Footer />
       </BrowserRouter>
     </AuthProvider>
   );

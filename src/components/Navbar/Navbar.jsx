@@ -424,7 +424,7 @@ const Navbar = React.memo(() => {
               </div>
             ) : (
               <a
-                className="ml-4 px-8 py-3 rounded-lg text-white font-medium text-sm modern-button"
+                className="ml-4 px-8 py-3 rounded-lg bg-white text-[#7614c2] font-medium text-sm modern-button"
                 href="/login"
               >
                 Login
@@ -569,7 +569,7 @@ const Navbar = React.memo(() => {
                 </div>
               ) : (
                 <a
-                  className="w-full py-3 mt-2 rounded-lg text-white font-medium text-center text-sm modern-button"
+                  className="w-full py-3 mt-2 rounded-lg bg-white text-[#7614c2] font-medium text-center text-sm modern-button"
                   href="/login"
                 >
                   Login

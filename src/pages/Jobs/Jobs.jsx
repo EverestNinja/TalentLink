@@ -83,9 +83,9 @@ const Jobs = React.memo(() => {
   );
 
   return (
-    <div className="min-h-screen bg-gradient-to-r from-[#b263fc] to-[#8928e2] p-6">
+    <div className="min-h-screen  p-6 mt-25 mb-10">
       <div className="max-w-7xl mx-auto text-white">
-        <h1 className="text-4xl font-bold text-center mb-10">Explore Jobs & Mentors</h1>
+        <h1 className="text-4xl font-bold text-center mb-10 text-[#8928e2]">Explore Jobs & Mentors</h1>
 
         {/* Filters */}
         <JobFilters
