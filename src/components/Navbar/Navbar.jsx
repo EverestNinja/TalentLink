@@ -294,6 +294,8 @@ const Navbar = React.memo(() => {
               Contact
             </a>
             
+
+            
             {/* Authentication Section */}
             {isAuthenticated ? (
               <div className="relative ml-4 profile-dropdown">
@@ -517,6 +519,8 @@ const Navbar = React.memo(() => {
               >
                 Contact
               </a>
+              
+
               
               {/* Mobile Authentication Section */}
               {isAuthenticated ? (
