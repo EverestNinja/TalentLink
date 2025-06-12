@@ -46,7 +46,7 @@ const MentorsSection = ({ isAuthenticated, authLoading, variant = "default", hid
     <div className="h-full flex flex-col">
       {!hideTitle && (
         <h2 className={`font-semibold ${
-          variant === "compact" ? "text-lg mb-4 text-gray-800" : "text-2xl mb-6 text-white"
+          variant === "compact" ? "text-lg mb-4 text-gray-800" : "text-2xl mb-6 text-[#8929e2]"
         }`}>Available Mentors</h2>
       )}
       <div className={`flex-1 ${

@@ -207,7 +207,7 @@ const ProfileView = React.memo(() => {
   const displayName = getDisplayName();
 
   return (
-    <Box sx={{ minHeight: '100vh', backgroundColor: '#f5f5f5', py: 4 }}>
+    <Box sx={{ minHeight: '100vh', backgroundColor: '#f5f5f5', py: 4 , marginTop: "100px", marginBottom: "10px"}}>
       <Box sx={{ maxWidth: 1200, mx: 'auto', px: 3 }}>
         {/* Profile Header */}
         <Card sx={{ mb: 4, p: 4 }}>

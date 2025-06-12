@@ -216,14 +216,14 @@ const PostJob = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-r from-[#b263fc] to-[#8928e2] flex items-center justify-center">
+      <div className="min-h-screen bg-gradient-to-r from-[#cfa9f3] to-[#ddccee] flex items-center justify-center">
         <div className="text-white text-lg">Loading...</div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-r from-[#b263fc] to-[#8928e2] py-8 px-4 mt-20">
+    <div className="min-h-screen bg-gradient-to-r from-[#caa1ef] to-[#8845c7] py-8 px-4 mt-20">
       <div className="max-w-6xl mx-auto">
         {/* Header */}
         <div className="text-center mb-8">

@@ -194,12 +194,14 @@ const ProfileComplete = () => {
     <Box
       sx={{
         minHeight: '100vh',
-        background: 'linear-gradient(to right, #b263fc, #8928e2)',
+        // background: 'linear-gradient(to right, #b263fc, #8928e2)',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
         px: 2,
         py: 4,
+        marginTop: "100px",
+        marginBottom: "20px"
       }}
     >
       <Card sx={{ p: 4, maxWidth: 600, width: '100%', borderRadius: 3 }}>

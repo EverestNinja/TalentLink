@@ -569,7 +569,7 @@ const Navbar = React.memo(() => {
                 className={`w-full px-4 py-3 text-white/90 hover:text-white font-medium text-sm modern-nav-item-mobile ${
                   location.pathname === "/pricing" ? "bg-[#7614c2] text-white" : ""
                 }`}
-                href="/"
+                href="/pricing"
               >
                 Pricing
               </a>
