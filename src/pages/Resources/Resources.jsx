@@ -59,14 +59,18 @@ function Resources() {
    ];
 
   return (
-    <div className="p-6 min-h-screen mt-25 mb-10">
-      <h1 className="text-4xl font-bold text-center text-[#8928e2] mb-2">
-        Get Started
-      </h1>
-      <p className="text-center text-[#8928e2] mb-10">
-        We provide you the way to learn from the best resources out there!
-      </p>
-
+    <>
+     <section
+  className="lg:px-12 sm:px-8 x-sm:px-4 py-32 flex justify-center items-center bg-gradient-to-r from-[#b263fc] to-[#8929e2] pb-15"
+>
+  <h1
+    className="md:text-[5rem] sm:text-[6rem] x-sm:text-[3rem] font-bold leading-none text-white text-center"
+  >
+    Explore TalentLink <br />
+    Free Resources
+  </h1>
+</section>
+    <div className="p-6 min-h-screen mt-10 mb-10">
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-10">
           {cardData.map((card) => (
             <Card
@@ -99,6 +103,7 @@ function Resources() {
           ))}
         </div>
     </div>
+    </>
   );
 }
 

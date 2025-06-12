@@ -187,11 +187,19 @@ const Jobs = React.memo(() => {
   }
 
   return (
+    <>
+           <section
+  className="lg:px-12 sm:px-8 x-sm:px-4 py-32 flex justify-center items-center bg-gradient-to-r from-[#b263fc] to-[#8929e2] pb-15"
+>
+  <h1
+    className="md:text-[5rem] sm:text-[6rem] x-sm:text-[3rem] font-bold leading-none text-white text-center"
+  >
+    Explore Jobs &   <br />
+    Mentors
+  </h1>
+</section>
 
     <div className="bg-[#ffff]">
-            <section className="bg-gradient-to-r from-[#b263fc] to-[#8928e2]">
-                <h1 className="text-4xl font-bold text-center mb-12">Explore Jobs & Mentors</h1>
-      </section>
       <div className="pt-20 pb-10 px-6">
 
         <div className="max-w-7xl mx-auto text-[#ffff]">
@@ -261,6 +269,7 @@ const Jobs = React.memo(() => {
         onClose={handleModalClose}
       />
     </div>
+    </>
   );
 });
 

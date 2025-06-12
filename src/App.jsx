@@ -19,7 +19,7 @@ import SignupPage from './pages/Login/signup';
 import ProfileComplete from './pages/Profile/ProfileComplete';
 import ProfileView from './pages/Profile/ProfileView';
 import ChoosePlan from './pages/Pricing/Pricing';
-
+import ResetPassword from './pages/Login/ResetPassword'
 
 function App() {
   useEffect(() => {
@@ -55,6 +55,7 @@ function App() {
           <Route path="/profile/complete" element={<ProfileComplete />} />
           <Route path="/pricing" element={<ChoosePlan />} />
           <Route path="/profile" element={<ProfileView />} />
+          <Route path="/resetpassword" element={<ResetPassword />} />
         </Routes>
         <Footer />
       </BrowserRouter>

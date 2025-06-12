@@ -7,7 +7,7 @@ function About() {
   className="lg:px-12 sm:px-8 x-sm:px-4 py-28 flex justify-center items-center bg-gradient-to-r from-[#b263fc] to-[#8929e2] pb-12"
 >
   <h1
-    className="md:text-[8rem] sm:text-[6rem] x-sm:text-[3rem] font-bold leading-none text-white text-center"
+    className="md:text-[5rem] sm:text-[6rem] x-sm:text-[3rem] font-bold leading-none text-white text-center"
   >
     What Is <br />
     TalentLink?

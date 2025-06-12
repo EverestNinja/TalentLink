@@ -31,6 +31,8 @@ export default function ResetPassword() {
         alignItems: "center",
         backgroundColor: "#f4f6f8",
         px: 2,
+        marginTop: "100px",
+        marginBottom: "20px"
       }}
     >
       <Paper elevation={6} sx={{ p: 4, borderRadius: 3, maxWidth: 420, width: "100%" }}>
@@ -39,7 +41,7 @@ export default function ResetPassword() {
         </Typography>
 
         <Typography variant="body2" color="text.secondary" align="center" mb={3}>
-          Enter your registered email. We’ll send you a link to reset your password.
+          Enter your registered email. We'll send you a link to reset your password.
         </Typography>
 
         <form onSubmit={handleSubmit}>
@@ -52,7 +54,7 @@ export default function ResetPassword() {
             onChange={(e) => setEmail(e.target.value)}
             sx={{ mb: 2 }}
           />
-          <Button type="submit" fullWidth variant="contained">
+          <Button type="submit" fullWidth variant="contained" className="!bg-[#8F2BE0]">
             Send Reset Link
           </Button>
         </form>

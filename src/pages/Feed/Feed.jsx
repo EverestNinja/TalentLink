@@ -376,12 +376,23 @@ function Feed() {
   };
 
   return (
-    <Box sx={{ minHeight: "100vh", pt: 8, background: "#f4f4f4" }}>
+    <>
+    <section
+  className="lg:px-12 sm:px-8 x-sm:px-4 py-28 flex justify-center items-center bg-gradient-to-r from-[#b263fc] to-[#8929e2] pb-12"
+>
+  <h1
+    className="md:text-[5rem] sm:text-[6rem] x-sm:text-[3rem] font-bold leading-none text-white text-center"
+  >
+    TalentLink  <br />
+    Feed
+  </h1>
+</section>
+    <Box sx={{ minHeight: "100vh", pt: 3, background: "#f4f4f4" }}>
       <Container maxWidth="xl">
         <Box display="flex" gap={2} mt={4} height="80vh">
           {/* Latest Jobs */}
           <Box width="25%" bgcolor="white" p={2} overflow="auto" borderRadius={2} height="100%" boxShadow={2}>
-            <Typography variant="h6" color="primary" gutterBottom>
+            <Typography variant="h6" color="#8929e2" gutterBottom>
               Latest Jobs
               {!jobsLoading && jobsData.length > 0 && (
                 <Typography component="span" variant="caption" color="text.secondary" sx={{ ml: 1 }}>
@@ -394,91 +405,24 @@ function Feed() {
 
           {/* Feed */}
           <Box width="50%" p={2} overflow="auto" height="100%" boxShadow={2} bgcolor="white" borderRadius={2}>
-            {/* Enhanced Post Creator */}
-            <Paper sx={{ p: 3, mb: 3, borderRadius: 3, border: '1px solid #e1e8ed' }} elevation={0}>
-              <Box display="flex" gap={2} alignItems="flex-start">
-                {/* User Avatar */}
-                <Box
-                  sx={{
-                    width: 48,
-                    height: 48,
-                    borderRadius: '50%',
-                    bgcolor: '#8928e2',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    color: 'white',
-                    fontWeight: 'bold',
-                    fontSize: '18px',
-                    flexShrink: 0
-                  }}
-                >
-                  {userData?.firstName?.[0] || userData?.displayName?.[0] || 'U'}
-                </Box>
-                
-                {/* Post Input Area */}
-                <Box flex={1}>
-                  <TextField
-                    value={newPost}
-                    onChange={(e) => setNewPost(e.target.value)}
-                    multiline
-                    rows={3}
-                    placeholder="What's happening in your career?"
-                    fullWidth
-                    variant="outlined"
-                    sx={{
-                      '& .MuiOutlinedInput-root': {
-                        borderRadius: 2,
-                        fontSize: '16px',
-                        '& fieldset': { border: 'none' },
-                        '&:hover fieldset': { border: 'none' },
-                        '&.Mui-focused fieldset': { border: '2px solid #8928e2' }
-                      },
-                      '& .MuiInputBase-input': {
-                        padding: '12px 16px'
-                      }
-                    }}
-                  />
-                  
-                  {/* Post Actions */}
-                  <Box display="flex" justifyContent="space-between" alignItems="center" mt={2}>
-                    <Box display="flex" gap={1}>
-                      <Select 
-                        value={role} 
-                        onChange={(e) => setRole(e.target.value)} 
-                        size="small"
-                        sx={{ 
-                          minWidth: 120,
-                          '& .MuiOutlinedInput-root': {
-                            borderRadius: 2,
-                            bgcolor: '#f7f9fa'
-                          }
-                        }}
-                      >
-                        <MenuItem value="Job Seeker">🔍 Job Seeker</MenuItem>
-                        <MenuItem value="Mentor">🎓 Mentor</MenuItem>
-                        <MenuItem value="Organization">🏢 Organization</MenuItem>
-                      </Select>
-                    </Box>
-                    
-                    <Button 
-                      variant="contained" 
-                      onClick={handlePost}
-                      disabled={!newPost.trim() || isPosting}
-                      sx={{
-                        bgcolor: '#8928e2',
-                        borderRadius: 3,
-                        textTransform: 'none',
-                        fontWeight: 600,
-                        px: 3,
-                        py: 1,
-                        '&:hover': { bgcolor: '#7a1fd8' },
-                        '&:disabled': { bgcolor: '#d1d5db' }
-                      }}
-                    >
-                      {isPosting ? 'Posting...' : 'Post'}
-                    </Button>
-                  </Box>
+            <Paper sx={{ p: 3, mb: 4 }} elevation={3}>
+              <Box display="flex" flexDirection="column" gap={2}>
+                <Select value={role} onChange={(e) => setRole(e.target.value)} displayEmpty>
+                  <MenuItem value="Job Seeker">Job Seeker</MenuItem>
+                  <MenuItem value="Mentor">Mentor</MenuItem>
+                </Select>
+                <TextField
+                  value={newPost}
+                  onChange={(e) => setNewPost(e.target.value)}
+                  multiline
+                  rows={4}
+                  placeholder="Share something or ask a question..."
+                  fullWidth
+                />
+                <Box display="flex" justifyContent="flex-end">
+                  <Button variant="contained" onClick={handlePost} className="!bg-[#8929e2]">
+                    Post
+                  </Button>
                 </Box>
               </Box>
             </Paper>
@@ -522,7 +466,7 @@ function Feed() {
           {/* Mentors */}
           <Box width="25%" bgcolor="white" borderRadius={2} height="100%" boxShadow={2} display="flex" flexDirection="column">
             <Box p={2} pb={1}>
-              <Typography variant="h6" color="primary" gutterBottom>
+              <Typography variant="h6" color="#8929e2" gutterBottom>
                 Available Mentors
               </Typography>
             </Box>
@@ -545,6 +489,7 @@ function Feed() {
         onClose={handleJobModalClose}
       />
     </Box>
+    </>
   );
 }
 
@@ -696,106 +641,20 @@ function EnhancedPostCard({ post, onComment, currentUser }) {
         </Box>
       </Box>
 
-      {/* Interaction Bar */}
-      <Box px={3} pb={2}>
-        <Box display="flex" alignItems="center" gap={3}>
-          <Button
-            startIcon={liked ? '❤️' : '🤍'}
-            onClick={handleLike}
-            disabled={isLiking || !currentUser}
-            size="small"
-            sx={{
-              color: liked ? '#e91e63' : 'text.secondary',
-              textTransform: 'none',
-              fontWeight: 500,
-              '&:hover': { bgcolor: 'transparent' },
-              '&:disabled': { color: 'text.disabled' }
-            }}
-          >
-            {likeCount}
-          </Button>
-          
-          <Button
-            startIcon="💬"
-            size="small"
-            sx={{
-              color: 'text.secondary',
-              textTransform: 'none',
-              fontWeight: 500,
-              '&:hover': { bgcolor: 'transparent' }
-            }}
-          >
-            {post.comments?.length || 0}
-          </Button>
-          
-          <Button
-            startIcon="🔄"
-            size="small"
-            sx={{
-              color: 'text.secondary',
-              textTransform: 'none',
-              fontWeight: 500,
-              '&:hover': { bgcolor: 'transparent' }
-            }}
-          >
-            Share
-          </Button>
-        </Box>
-      </Box>
+      <Typography sx={{ whiteSpace: "pre-wrap", mb: 2 }}>{post.content}</Typography>
 
-      {/* Comment Section */}
-      <Box px={3} pb={3}>
-        <Box display="flex" gap={2} alignItems="flex-start">
-          <Box
-            sx={{
-              width: 32,
-              height: 32,
-              borderRadius: '50%',
-              bgcolor: '#8928e2',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              color: 'white',
-              fontWeight: 'bold',
-              fontSize: '14px',
-              flexShrink: 0
-            }}
-          >
-            U
-          </Box>
-          <Box flex={1} display="flex" gap={1}>
-            <TextField
-              size="small"
-              value={comment}
-              onChange={(e) => setComment(e.target.value)}
-              placeholder="Write a comment..."
-              fullWidth
-              sx={{
-                '& .MuiOutlinedInput-root': {
-                  borderRadius: 3,
-                  bgcolor: '#f7f9fa',
-                  '& fieldset': { border: 'none' },
-                  '&:hover fieldset': { border: 'none' },
-                  '&.Mui-focused fieldset': { border: '2px solid #8928e2' }
-                }
-              }}
-            />
-            <Button 
-              variant="contained" 
-              onClick={handleAddComment}
-              disabled={!comment.trim()}
-              sx={{
-                bgcolor: '#8928e2',
-                borderRadius: 3,
-                textTransform: 'none',
-                px: 2,
-                '&:hover': { bgcolor: '#7a1fd8' }
-              }}
-            >
-              Reply
-            </Button>
-          </Box>
-        </Box>
+      <Box display="flex" gap={1} mb={2}>
+        <TextField
+          size="small"
+          value={comment}
+          onChange={(e) => setComment(e.target.value)}
+          placeholder="Add a comment..."
+          fullWidth
+        />
+        <Button variant="contained" className="bg-[#8929E2]" onClick={handleAddComment}>
+          Comment
+        </Button>
+      </Box>
 
         {/* Comments Display */}
         {post.comments && post.comments.length > 0 && (

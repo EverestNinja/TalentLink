@@ -100,9 +100,9 @@ const JobDetailsModal = ({ job, isOpen, onClose }) => {
       <div className="bg-white rounded-xl max-w-4xl w-full max-h-[90vh] overflow-y-auto">
         {/* Header */}
         <div className="sticky top-0 bg-white border-b border-gray-200 p-6 flex items-center justify-between">
-          <Typography variant="h4" className="text-[#8928e2] font-bold">
+          {/* <Typography variant="h4" className="!text-[#8929e2]">
             Job Details
-          </Typography>
+          </Typography> */}
           <Button
             variant="text"
             className="!p-2 !rounded-full hover:bg-gray-100"

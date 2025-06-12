@@ -3,7 +3,7 @@ import React, { useEffect } from "react";
 function Contact() {
 
   return (
-    <div className="relative h-screen w-screen overflow-hidden mt-20 pt-24 pb-24">
+    <div className="relative h-screen w-screen overflow-hidden mt-20 pt-25 pb-25">
       {/* Background layers */}
       <div className="absolute inset-0 z-0">
         {/* Gradient background */}

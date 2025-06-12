@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import {
   Box,
   Card,
@@ -393,6 +393,9 @@ export default function RoleBasedLoginPage() {
                   ),
                 }}
               />
+<div className="mb-5 text-right hover:underline hover:text-[#8F2BE0]">
+             <Link to='/resetpassword'>Forgot Password ?</Link>
+             </div>
 
               <Button
                 type="submit"
