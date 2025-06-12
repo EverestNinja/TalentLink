@@ -19,7 +19,7 @@ function Footer() {
               <h2 className="mb-6 text-sm font-semibold  uppercase text-white">
                 Useful Links
               </h2>
-              <ul className="text-gray-200 dark:text-gray-400 font-medium">
+              <ul className="text-gray-200 dark:text-gray-300 font-medium">
                 <li className="mb-4">
                   <a href="/#services" className="hover:underline">
                     Feed
