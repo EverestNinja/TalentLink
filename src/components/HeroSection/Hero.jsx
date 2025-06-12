@@ -1,6 +1,7 @@
+import React from "react";
 import heroimg from "../../assets/manb.png";
 
-function Hero() {
+const Hero = React.memo(() => {
   return (
     <section className="flex justify-center bg-gradient-to-r from-[#b263fc] to-[#8929e2] mt-16">
       <div className="max-w-[1300px] w-full lg:px-12 sm:px-8 px-4 min-h-[600px] max-h-[600px] flex justify-between gap-4 overflow-hidden">
@@ -54,6 +55,6 @@ function Hero() {
       </div>
     </section>
   );
-}
+});
 
 export default Hero;

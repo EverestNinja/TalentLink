@@ -1,10 +1,10 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo, useCallback } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../../contexts/AuthContext";
 import "./Navbar.css";
 import logo from "../../assets/logo.png";
 
-function Navbar() {
+const Navbar = React.memo(() => {
   const [isMobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false);
@@ -12,21 +12,32 @@ function Navbar() {
   const navigate = useNavigate();
   const { isAuthenticated, user, userData, logout, getDisplayName, getProfileImage, getUserRole, loading } = useAuth();
 
+  // Optimized scroll handler with throttling
   useEffect(() => {
+    let ticking = false;
     const handleScroll = () => {
-      if (window.scrollY > 50) {
-        setIsScrolled(true);
-      } else {
-        setIsScrolled(false);
+      if (!ticking) {
+        requestAnimationFrame(() => {
+          setIsScrolled(window.scrollY > 50);
+          ticking = false;
+        });
+        ticking = true;
       }
     };
 
-    window.addEventListener("scroll", handleScroll);
+    window.addEventListener("scroll", handleScroll, { passive: true });
 
     return () => {
       window.removeEventListener("scroll", handleScroll);
     };
   }, []);
+
+  // Memoize auth-related values to prevent unnecessary re-renders
+  const authValues = useMemo(() => ({
+    displayName: getDisplayName(),
+    profileImage: getProfileImage(),
+    userRole: getUserRole()
+  }), [getDisplayName, getProfileImage, getUserRole]);
 
   // Close profile menu when clicking outside
   useEffect(() => {
@@ -58,10 +69,157 @@ function Navbar() {
     console.log('Navigate to settings page');
   };
 
-  // Don't render anything while loading auth state
-  if (loading) {
-    return null;
-  }
+  // Show navbar skeleton while loading auth state (instead of nothing)
+  const renderAuthSection = () => {
+    if (loading) {
+      return (
+        <div className="ml-4 flex items-center space-x-2">
+          <div className="w-8 h-8 bg-white/20 rounded-full animate-pulse"></div>
+          <div className="hidden md:block w-16 h-4 bg-white/20 rounded animate-pulse"></div>
+        </div>
+      );
+    }
+    
+    if (isAuthenticated) {
+      return (
+        <div className="relative ml-4 profile-dropdown">
+          <button
+            onClick={() => setIsProfileMenuOpen(!isProfileMenuOpen)}
+            className="flex items-center space-x-2 p-2 rounded-lg hover:bg-white/10 transition-colors"
+          >
+            <img
+              src={authValues.profileImage}
+              alt="Profile"
+              className="w-8 h-8 rounded-full object-cover border-2 border-white/20"
+            />
+            <span className="text-white font-medium text-sm hidden md:block">
+              {authValues.displayName}
+            </span>
+            <svg
+              className={`w-4 h-4 text-white transition-transform ${
+                isProfileMenuOpen ? 'rotate-180' : ''
+              }`}
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="2"
+                d="M19 9l-7 7-7-7"
+              ></path>
+            </svg>
+          </button>
+
+          {/* Profile Dropdown Menu */}
+          {isProfileMenuOpen && (
+            <div className="absolute right-0 mt-2 w-64 bg-white rounded-xl shadow-lg border border-gray-100 py-2 z-50">
+              {/* User Info */}
+              <div className="px-4 py-3 border-b border-gray-100">
+                <div className="flex items-center space-x-3">
+                  <img
+                    src={authValues.profileImage}
+                    alt="Profile"
+                    className="w-12 h-12 rounded-full object-cover"
+                  />
+                  <div>
+                    <p className="text-sm font-medium text-gray-900">
+                      {authValues.displayName}
+                    </p>
+                    <p className="text-xs text-gray-500">{user?.email}</p>
+                    <p className="text-xs text-purple-600 capitalize font-medium">
+                      {authValues.userRole}
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Menu Items */}
+              <div className="py-1">
+                <button
+                  onClick={handleProfileClick}
+                  className="flex items-center w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors"
+                >
+                  <svg
+                    className="w-4 h-4 mr-3 text-gray-400"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
+                      d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+                    ></path>
+                  </svg>
+                  View Profile
+                </button>
+                
+                <button
+                  onClick={handleSettingsClick}
+                  className="flex items-center w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors"
+                >
+                  <svg
+                    className="w-4 h-4 mr-3 text-gray-400"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
+                      d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"
+                    ></path>
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
+                      d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+                    ></path>
+                  </svg>
+                  Settings
+                </button>
+
+                <div className="border-t border-gray-100 my-1"></div>
+                
+                <button
+                  onClick={handleLogout}
+                  className="flex items-center w-full px-4 py-2 text-sm text-red-600 hover:bg-red-50 transition-colors"
+                >
+                  <svg
+                    className="w-4 h-4 mr-3 text-red-400"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
+                      d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
+                    ></path>
+                  </svg>
+                  Logout
+                </button>
+              </div>
+            </div>
+          )}
+        </div>
+      );
+    }
+    
+    return (
+      <a
+        className="ml-4 px-8 py-3 rounded-lg text-white font-medium text-sm modern-button"
+        href="/login"
+      >
+        Login
+      </a>
+    );
+  };
 
   return (
    
@@ -144,12 +302,12 @@ function Navbar() {
                   className="flex items-center space-x-2 p-2 rounded-lg hover:bg-white/10 transition-colors"
                 >
                   <img
-                    src={getProfileImage()}
+                    src={authValues.profileImage}
                     alt="Profile"
                     className="w-8 h-8 rounded-full object-cover border-2 border-white/20"
                   />
                   <span className="text-white font-medium text-sm hidden md:block">
-                    {getDisplayName()}
+                    {authValues.displayName}
                   </span>
                   <svg
                     className={`w-4 h-4 text-white transition-transform ${
@@ -175,17 +333,17 @@ function Navbar() {
                     <div className="px-4 py-3 border-b border-gray-100">
                       <div className="flex items-center space-x-3">
                         <img
-                          src={getProfileImage()}
+                          src={authValues.profileImage}
                           alt="Profile"
                           className="w-12 h-12 rounded-full object-cover"
                         />
                         <div>
                           <p className="text-sm font-medium text-gray-900">
-                            {getDisplayName()}
+                            {authValues.displayName}
                           </p>
                           <p className="text-xs text-gray-500">{user?.email}</p>
                           <p className="text-xs text-purple-600 capitalize font-medium">
-                            {getUserRole()}
+                            {authValues.userRole}
                           </p>
                         </div>
                       </div>
@@ -365,16 +523,16 @@ function Navbar() {
                 <div className="mt-2 pt-2 border-t border-white/20">
                   <div className="flex items-center space-x-3 px-4 py-3 mb-2">
                     <img
-                      src={getProfileImage()}
+                      src={authValues.profileImage}
                       alt="Profile"
                       className="w-10 h-10 rounded-full object-cover border-2 border-white/20"
                     />
                     <div>
                       <p className="text-white font-medium text-sm">
-                        {getDisplayName()}
+                        {authValues.displayName}
                       </p>
                       <p className="text-white/70 text-xs capitalize">
-                        {getUserRole()}
+                        {authValues.userRole}
                       </p>
                     </div>
                   </div>
@@ -423,6 +581,6 @@ function Navbar() {
       </div>
     </nav>
   );
-}
+});
 
 export default Navbar;

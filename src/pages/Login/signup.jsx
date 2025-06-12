@@ -107,8 +107,8 @@ export default function SignupPage() {
       confirmPassword: "",
     });
 
-    // Determine redirect path based on profile completion
-    const redirectPath = getRedirectPath(result.userData.role, result.userData);
+    // Determine redirect path based on whether this is a new user or login
+    const redirectPath = getRedirectPath(result.userData.role, result.userData, result.isNewUser);
     
     // Navigate after successful signup
     setTimeout(() => {

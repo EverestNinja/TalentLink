@@ -63,11 +63,10 @@ export const createUserDocument = async (user, userData) => {
     }),
     ...(userData.role === 'mentor' && {
       expertise: [],
-      mentorshipAreas: [],
       experience: '',
       bio: '',
       availability: '',
-      linkedin: '',
+      linkedinURL: '',
       mentees: []
     }),
     ...(userData.role === 'organization' && {
@@ -117,7 +116,8 @@ export const signupWithEmail = async (formData, selectedRole) => {
       success: true,
       message: 'Account created successfully! Welcome to TalentLink.',
       userData,
-      user
+      user,
+      isNewUser: true
     };
     
   } catch (error) {
@@ -164,7 +164,8 @@ export const signupWithGoogle = async (selectedRole) => {
       success: true,
       message: 'Account created successfully with Google! Welcome to TalentLink.',
       userData,
-      user
+      user,
+      isNewUser: true
     };
     
   } catch (error) {
@@ -178,33 +179,15 @@ export const signupWithGoogle = async (selectedRole) => {
   }
 };
 
-// Get redirect path based on role and profile completion
-export const getRedirectPath = (role, userData) => {
-  // If profile is not complete, redirect to profile setup
-  if (!userData.profileComplete) {
-    switch (role) {
-      case 'user':
-        return '/profile/user-setup';
-      case 'mentor':
-        return '/profile/mentor-setup';
-      case 'organization':
-        return '/profile/org-setup';
-      default:
-        return '/profile/setup';
-    }
+// Get redirect path for signup (new users) vs login (existing users)
+export const getRedirectPath = (role, userData, isNewUser = false) => {
+  // For new signups, always go to profile complete page
+  if (isNewUser) {
+    return `/profile/complete?role=${role}`;
   }
   
-  // If profile is complete, redirect to role-specific dashboard
-  switch (role) {
-    case 'user':
-      return '/dashboard/user';
-    case 'mentor':
-      return '/dashboard/mentor';
-    case 'organization':
-      return '/dashboard/organization';
-    default:
-      return '/dashboard';
-  }
+  // For existing users logging in, go to homepage
+  return '/';
 };
 
 // Get user document from Firestore
@@ -225,7 +208,7 @@ export const getUserDocument = async (uid) => {
 };
 
 // Email login function
-export const loginWithEmail = async (email, password) => {
+export const loginWithEmail = async (email, password, selectedRole) => {
   try {
     // Sign in with Firebase Auth
     const userCredential = await signInWithEmailAndPassword(auth, email, password);
@@ -238,11 +221,26 @@ export const loginWithEmail = async (email, password) => {
       throw new Error('User data not found. Please contact support.');
     }
     
+    // Validate role - check if user's role matches the selected login role
+    if (userData.role !== selectedRole) {
+      // Sign out the user since they logged in through wrong portal
+      await auth.signOut();
+      
+      const roleNames = {
+        user: 'User',
+        mentor: 'Mentor', 
+        organization: 'Organization'
+      };
+      
+      throw new Error(`You are registered as a ${roleNames[userData.role]}. Please use the ${roleNames[userData.role]} login portal instead.`);
+    }
+    
     return {
       success: true,
       message: 'Login successful!',
       userData,
-      user
+      user,
+      isNewUser: false
     };
     
   } catch (error) {
@@ -264,7 +262,7 @@ export const loginWithEmail = async (email, password) => {
 };
 
 // Google login function
-export const loginWithGoogle = async () => {
+export const loginWithGoogle = async (selectedRole) => {
   try {
     const provider = new GoogleAuthProvider();
     const result = await signInWithPopup(auth, provider);
@@ -277,11 +275,26 @@ export const loginWithGoogle = async () => {
       throw new Error('Account not found. Please sign up first.');
     }
     
+    // Validate role - check if user's role matches the selected login role
+    if (userData.role !== selectedRole) {
+      // Sign out the user since they logged in through wrong portal
+      await auth.signOut();
+      
+      const roleNames = {
+        user: 'User',
+        mentor: 'Mentor', 
+        organization: 'Organization'
+      };
+      
+      throw new Error(`You are registered as a ${roleNames[userData.role]}. Please use the ${roleNames[userData.role]} login portal instead.`);
+    }
+    
     return {
       success: true,
       message: 'Login successful with Google!',
       userData,
-      user
+      user,
+      isNewUser: false
     };
     
   } catch (error) {
@@ -312,7 +325,7 @@ export const getProfileCompletionStatus = async (uid) => {
     const requiredFields = {
       basic: ['firstName', 'lastName', 'email'],
       user: ['skills', 'interests', 'experience', 'education'],
-      mentor: ['expertise', 'mentorshipAreas', 'experience', 'bio', 'availability'],
+      mentor: ['expertise', 'experience', 'bio', 'availability', 'linkedinURL'],
       organization: ['organizationName', 'organizationType', 'website', 'description', 'location']
     };
     
@@ -334,7 +347,24 @@ export const getProfileCompletionStatus = async (uid) => {
     // Check role-specific fields
     roleSpecificFields.forEach(field => {
       const value = userData[field];
-      if (!value || 
+      
+      // Special validation for linkedinURL
+      if (field === 'linkedinURL') {
+        if (!value || typeof value !== 'string' || value.trim() === '') {
+          missingFields.push(field);
+        } else {
+          // Basic URL validation for LinkedIn
+          const urlPattern = /^https?:\/\/.+/i;
+          const linkedinPattern = /linkedin\.com/i;
+          if (urlPattern.test(value.trim()) && linkedinPattern.test(value.trim())) {
+            completedFields.push(field);
+          } else {
+            missingFields.push(field);
+          }
+        }
+      }
+      // Standard validation for other fields
+      else if (!value || 
           (typeof value === 'string' && value.trim() === '') ||
           (Array.isArray(value) && value.length === 0)) {
         missingFields.push(field);
@@ -467,4 +497,6 @@ export const generateUsername = (firstName, lastName) => {
   const base = `${firstName.toLowerCase()}${lastName.toLowerCase()}`;
   const random = Math.floor(Math.random() * 1000);
   return `${base}${random}`;
-}; 
+};
+
+ 

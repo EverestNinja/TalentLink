@@ -96,10 +96,10 @@ export default function RoleBasedLoginPage() {
       password: "",
     });
 
-    // Determine redirect path based on profile completion
-    const redirectPath = getRedirectPath(result.userData.role, result.userData);
+    // Determine redirect path based on whether this is a new user or login
+    const redirectPath = getRedirectPath(result.userData.role, result.userData, result.isNewUser);
     
-    // Navigate after successful login
+    // Navigate after successful login/signup
     setTimeout(() => {
       navigate(redirectPath);
     }, 1500);
@@ -111,7 +111,7 @@ export default function RoleBasedLoginPage() {
     setError("");
 
     try {
-      const result = await loginWithEmail(formData.email, formData.password);
+      const result = await loginWithEmail(formData.email, formData.password, selectedRole);
       handleLoginSuccess(result);
     } catch (error) {
       setError(error.message);
@@ -125,7 +125,7 @@ export default function RoleBasedLoginPage() {
     setError("");
 
     try {
-      const result = await loginWithGoogle();
+      const result = await loginWithGoogle(selectedRole);
       handleLoginSuccess(result);
     } catch (error) {
       setError(error.message);
@@ -187,7 +187,7 @@ export default function RoleBasedLoginPage() {
         gutterBottom
         sx={{
           position: "absolute",
-          top: 20,
+          marginTop: 1,
           left: "50%",
           transform: "translateX(-50%)",
           fontWeight: "bold",
