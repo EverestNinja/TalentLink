@@ -250,6 +250,14 @@ const Navbar = React.memo(() => {
               Home
             </a>
             <a
+              className={`relative px-4 py-2 text-white/90 hover:text-white font-medium text-sm modern-nav-item ${
+                location.pathname === "/pricing" ? "bg-[#7614c2] text-white" : ""
+              }`}
+              href="/pricing"
+            >
+              Pricing
+            </a>
+            <a
               className={`cursor-pointer relative px-4 py-2 text-white/90 hover:text-white font-medium text-sm modern-nav-item ${
                 location.pathname === "/feed" ? "bg-[#7614c2] text-white" : ""
               }`}
@@ -556,6 +564,14 @@ const Navbar = React.memo(() => {
                 href="/"
               >
                 Home
+              </a>
+                  <a
+                className={`w-full px-4 py-3 text-white/90 hover:text-white font-medium text-sm modern-nav-item-mobile ${
+                  location.pathname === "/pricing" ? "bg-[#7614c2] text-white" : ""
+                }`}
+                href="/"
+              >
+                Pricing
               </a>
               <a
                 className={`cursor-pointer w-full px-4 py-3 text-white/90 hover:text-white font-medium text-sm modern-nav-item-mobile ${
